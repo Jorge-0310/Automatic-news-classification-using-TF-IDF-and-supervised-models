@@ -31,6 +31,30 @@ La línea base ya puede entrenarse y generar predicciones sobre el conjunto de p
 
 Estos resultados son preliminares y sirven para comprobar que el flujo de datos, entrenamiento, predicción y evaluación funciona correctamente. Todavía no representan la comparación final del proyecto.
 
+Ejemplos de entrenamiento: 120000
+Ejemplos de prueba: 7600
+
+
+NewsScope - Resultado de línea base
+========================================
+
+Accuracy: 0.9179
+F1 macro: 0.9177
+
+Reporte por clase:
+              precision    recall  f1-score   support
+
+       World       0.93      0.91      0.92      1900
+      Sports       0.96      0.98      0.97      1900
+    Business       0.89      0.88      0.89      1900
+    Sci/Tech       0.89      0.90      0.90      1900
+
+    accuracy                           0.92      7600
+   macro avg       0.92      0.92      0.92      7600
+weighted avg       0.92      0.92      0.92      7600
+
+
+
 ## Reproducibilidad
 
 El proyecto incluye las dependencias necesarias en `requirements.txt`. La ejecución se realiza con Python y scikit-learn, utilizando una semilla fija (`random_state=42`) en el modelo. El código fuente de la línea base se encuentra en `src/baseline.py`.
@@ -51,3 +75,5 @@ python src/baseline.py
 5. Analizar la matriz de confusión y las métricas por clase.
 6. Examinar al menos diez errores de clasificación.
 7. Desarrollar el prototipo funcional del sistema.
+
+## Resultados 
