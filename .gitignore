@@ -1,1 +1,28 @@
 
+# Entornos y cachés de Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Descargas y cachés locales de datasets
+.cache/
+data/*
+!data/README.md
+
+# Artefactos pesados de entrenamiento (no excluir JSON/CSV ni figuras)
+*.joblib
+*.pkl
+*.pickle
+*.onnx
+models/
+experiments/models/
+# Errores incluyen fragmentos protegidos del corpus; solo análisis local.
+experiments/errors.csv
+
+# Archivos temporales del sistema/editor
+.DS_Store
+Thumbs.db
+.vscode/
