@@ -27,8 +27,10 @@ python src/train.py
 
 En Windows use `.venv\Scripts\Activate.ps1` en vez de `source ...`; si no
 puede activar el entorno, llame a `.venv\Scripts\python.exe` para instalar
-dependencias y ejecutar el script. La instalación limpia no se ha auditado
-en todas las plataformas.
+dependencias y ejecutar el script. `requirements.txt` fija también PyArrow,
+dependencia de `datasets`, para evitar combinaciones incompatibles. Se
+comprobó instalación limpia y `pip check` en Windows/Python 3.11; no se ha
+verificado en todas las plataformas.
 
 La línea base previa se puede repetir por separado con `python src/baseline.py`.
 Escribe
@@ -49,8 +51,11 @@ Para candidatos de errores reales: `python src/error_analysis.py`, que crea
 manualmente los casos; las columnas de causa vienen vacías. Existe un
 borrador de IA para 12 de 20 ejemplos (`experiments/error_review_draft.json`)
 que puede aplicarse con `python src/annotate_errors.py` y **debe validarse
-por el equipo**. Para las pruebas unitarias:
+por el equipo** con `python src/review_errors.py` (revisión interactiva de
+al menos diez casos, solo local). Para las pruebas unitarias:
 `python -m unittest discover -s tests -v`.
+Para verificar la app con un modelo recién entrenado (cuatro entradas,
+probabilidades y texto vacío): `python tests/smoke_app.py`.
 
 ## Estructura
 
@@ -61,6 +66,7 @@ por el equipo**. Para las pruebas unitarias:
 - `src/config.py`: semilla compartida para los scripts de entrenamiento.
 - `app.py`: clasificación local de una noticia.
 - `data/README.md`: fuente y condiciones de almacenamiento de los datos.
+- `notebooks/exploracion.ipynb`: exploración agregada sin publicar textos.
 - `experiments/README.md`: archivos de resultados y procedimiento.
 - `results/`: resultados preliminares ya versionados.
 - `docs/`: propuesta, avance, bitácora y plan.

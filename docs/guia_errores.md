@@ -16,6 +16,16 @@ su origen es IA y **debe revisar y corregir** cada uno antes de considerarlos
 un análisis manual. El script de extracción no sobreescribirá un archivo
 ya anotado.
 
+Para cerrar la revisión humana, al menos un integrante debe leer y aceptar o
+corregir personalmente al menos diez casos con `python src/review_errors.py`.
+El script muestra el texto **solo en la terminal local** y solicita el nombre
+del revisor; no genera `experiments/error_review_confirmed.json` si se
+revisaron menos de diez. El JSON confirmado contiene únicamente índices,
+clases y conclusiones, nunca noticias. Si no aparece ese archivo, el
+análisis sigue pendiente; ningún borrador de IA equivale a confirmación
+humana. Comprueben manualmente las categorías y los recuentos del JSON
+antes de incorporarlos al informe.
+
 | Tipo posible | Hipótesis que debe contrastarse | Límite que ilustra |
 |---|---|---|
 | Business / Sci-Tech | Aparecen términos compartidos sobre tecnología y empresas. | Una sola etiqueta omite la superposición temática. |

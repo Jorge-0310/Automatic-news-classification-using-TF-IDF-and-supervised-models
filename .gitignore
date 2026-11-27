@@ -6,6 +6,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .mypy_cache/
+.ipynb_checkpoints/
 
 # Descargas y cachés locales de datasets
 .cache/
@@ -26,3 +27,6 @@ experiments/errors.csv
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Valoración local de trabajo (no publicar)
+/docs/AGENTS.md

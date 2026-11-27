@@ -23,7 +23,10 @@ logística, Complement Naive Bayes, SGD.
 ## I. Introducción y formulación
 
 Un portal de noticias o sistema de monitoreo recibe textos cuyo tema necesita
-organizar. NewsScope propone una etiqueta inicial `World`, `Sports`,
+organizar. Como indicador de escala del problema (no de demanda actual), el
+corpus original de AG reúne más de un millón de artículos de más de dos mil
+fuentes [7]; el subconjunto de clasificación contiene 127 600 ejemplos [6].
+NewsScope propone una etiqueta inicial `World`, `Sports`,
 `Business` o `Sci/Tech` para una noticia en inglés, sujeta a revisión humana;
 no verifica hechos. La pregunta es si ComplementNB o SGDClassifier mejoran la
 regresión logística de referencia y si añadir bigramas modifica el rendimiento
@@ -51,9 +54,13 @@ empleado para evaluar clasificadores de texto [1].
 
 AG News (`fancyzhx/ag_news`) ofrece 120 000 ejemplos de entrenamiento y
 7 600 de prueba, con cuatro clases de 1 900 ejemplos cada una en prueba.
-El corpus está en inglés; no se redistribuyen textos. **Confirmar las
-condiciones de licencia de los textos con las fuentes antes de publicar o
-reutilizar los datos.** Un 20 % estratificado de entrenamiento se reserva
+El corpus está en inglés. La ficha de Hugging Face señala licencia
+**desconocida** [6]. El sitio del corpus original permite investigación
+no comercial, solicita atribución y advierte que el copyright de los
+artículos pertenece a las fuentes periodísticas [7]. La licencia de la
+versión derivada no está confirmada; por precaución no se publican textos
+ni errores con fragmentos y se debe revisar cualquier uso adicional.
+Un 20 % estratificado de entrenamiento se reserva
 para validación con semilla 42. Se construye un `Pipeline` separado por
 configuración: TF-IDF (`min_df=2`, `max_df=0.95`, `sublinear_tf=True`)
 y clasificador. Configuraciones: logística con unigramas, logística con
@@ -67,7 +74,11 @@ entrenamiento completo y se evalúa una sola vez en prueba. La línea base
 histórica en `results/` ya había examinado prueba y **no** forma parte de la
 selección ciega del experimento comparativo. No se realizó una búsqueda
 exhaustiva ni validación cruzada de cinco pliegues; estas diferencias
-respecto de la propuesta original deben declararse.
+respecto de la propuesta original reflejan una reducción de alcance:
+cuatro configuraciones fijas y una sola partición para limitar el tiempo
+de cómputo. No se evaluaron otros valores de `C`, `alpha` o `loss`,
+por lo que no se puede concluir que una familia de modelos sea
+universalmente superior.
 
 ## IV. Resultados y discusión
 
@@ -173,3 +184,6 @@ https://jmlr.org/papers/v12/pedregosa11a.html
 
 [6] Hugging Face, “AG News — fancyzhx/ag_news”.
 https://huggingface.co/datasets/fancyzhx/ag_news
+
+[7] A. Gulli, “AG's corpus of news articles”, Universidad de Pisa.
+https://www.di.unipi.it/~gulli/AG_corpus_of_news_articles.html
