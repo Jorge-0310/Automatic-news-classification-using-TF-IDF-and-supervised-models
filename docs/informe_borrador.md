@@ -1,8 +1,5 @@
 # NewsScope — borrador de contenido para artículo IEEE
 
-> Borrador de contenido, no PDF IEEE final. Los números siguientes proceden
-> de `experiments/`; faltan errores confirmados por revisión humana y
-> contribuciones confirmadas por los integrantes antes de entregar.
 
 ## Resumen
 
@@ -122,6 +119,41 @@ umbral de 1 punto del Hito 1. Esa referencia ya había usado prueba antes
 del experimento, por lo que la comparación principal es la de validación.
 No se calcularon intervalos bootstrap ni McNemar; no se afirma
 significancia estadística.
+
+### Costo computacional y huella de carbono
+
+Además del desempeño predictivo, se registró el costo computacional de cada
+configuración mediante `CodeCarbon` y `OfflineEmissionsTracker`. La medición
+se realizó en modo `process`, con `country_iso_code="COL"` y un intervalo de
+medición de un segundo. Los resultados se almacenaron en
+`experiments/carbon/` y se resumieron en `model_comparison.csv` y
+`run_config.json`.
+
+La configuración seleccionada, Regresión Logística con TF-IDF y unigramas y
+bigramas, consumió aproximadamente `0,0004575 kWh` y generó
+`0,0000855 kg CO2eq` durante la ejecución de validación sobre 96.000 ejemplos
+de entrenamiento y 24.000 ejemplos de validación. Esta configuración requirió
+aproximadamente `68,20 segundos` de entrenamiento y `1,46 segundos` de
+predicción sobre el conjunto de validación, y generó `383.016 características`
+TF-IDF.
+
+Al comparar las configuraciones, Regresión Logística con unigramas presentó un
+menor costo ambiental, con un consumo aproximado de `0,0000869 kWh` y
+emisiones de `0,0000162 kg CO2eq`. Sin embargo, su F1 macro fue `0,9172`,
+inferior al `0,9193` obtenido por Regresión Logística con unigramas y
+bigramas. ComplementNB con bigramas obtuvo un F1 macro de `0,9138`, un consumo
+de `0,0000524 kWh` y emisiones de `0,0000098 kg CO2eq`. SGDClassifier con
+bigramas obtuvo un F1 macro de `0,8922`, un consumo de `0,0000607 kWh` y
+emisiones de `0,0000113 kg CO2eq`.
+
+Después de seleccionar el ganador, el modelo se reentrenó con los 120.000
+ejemplos del conjunto de entrenamiento. Esta ejecución final requirió
+aproximadamente `98,94 segundos` de entrenamiento y `0,67 segundos` de
+predicción sobre el conjunto de prueba. CodeCarbon estimó un consumo de
+`0,0008136 kWh` y emisiones de `0,0001520 kg CO2eq`, equivalentes
+aproximadamente a `0,1520 gramos de CO2eq`. El modelo final utilizó
+`459.310 características` y ocupó aproximadamente `41,88 MB` en disco.
+
 
 El extractor obtuvo 20 errores distintos, repartidos entre diferentes
 pares de clases. Hay **12 borradores de categorización generados por IA**

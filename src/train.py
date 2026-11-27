@@ -493,35 +493,107 @@ def main():
         flush=True,
     )
 
-    # Comprobación de estabilidad con una segunda semilla.
+  
     repeat_seed = RANDOM_STATE + 1
+
     repeated = build_pipeline(
         best,
         repeat_seed,
     )
 
-    started = perf_counter()
-    repeated.fit(x_fit, y_fit)
-    repeat_train_seconds = perf_counter() - started
+    repeat_carbon_file = (
+        f"{best['id']}_repeat_validation.csv"
+    )
 
-    repeat_metrics, _ = measure(
-        repeated,
-        x_val,
-        y_val,
+    repeat_carbon_path = CARBON_DIR / repeat_carbon_file
+
+    repeat_tracker = OfflineEmissionsTracker(
+        country_iso_code="COL",
+        tracking_mode="process",
+        measure_power_secs=1,
+        output_dir=str(CARBON_DIR),
+        output_file=repeat_carbon_file,
+        project_name=(
+            f"NewsScope-{best['id']}-repeat-validation"
+        ),
+    )
+
+    repeat_tracker.start()
+
+    try:
+        started = perf_counter()
+
+        repeated.fit(x_fit, y_fit)
+
+        repeat_train_seconds = (
+            perf_counter() - started
+        )
+
+        repeat_metrics, _ = measure(
+            repeated,
+            x_val,
+            y_val,
+        )
+
+    finally:
+        repeat_tracker.stop()
+
+    repeat_carbon_values = read_carbon_file(
+        repeat_carbon_path
+    )
+
+    repeat_row = flatten_row(
+        best,
+        repeat_metrics,
+        repeat_train_seconds,
+        len(x_fit),
+        len(x_val),
+        repeat_seed,
+    )
+
+    repeat_row["energy_kwh"] = (
+        repeat_carbon_values["energy_kwh"]
+    )
+
+    repeat_row["emissions_kg_co2eq"] = (
+        repeat_carbon_values[
+            "emissions_kg_co2eq"
+        ]
+    )
+
+    repeat_row["cpu_energy_kwh"] = (
+        repeat_carbon_values[
+            "cpu_energy_kwh"
+        ]
+    )
+
+    repeat_row["ram_energy_kwh"] = (
+        repeat_carbon_values[
+            "ram_energy_kwh"
+        ]
+    )
+
+    repeat_row["gpu_energy_kwh"] = (
+        repeat_carbon_values[
+            "gpu_energy_kwh"
+        ]
+    )
+
+    repeat_row["feature_count"] = len(
+        repeated.named_steps[
+            "tfidf"
+        ].vocabulary_
+    )
+
+    repeat_row["carbon_measurement_file"] = str(
+        repeat_carbon_path.relative_to(ROOT)
     )
 
     write_csv(
         EXPERIMENTS / "stability.csv",
         [
             rows[winner],
-            flatten_row(
-                best,
-                repeat_metrics,
-                repeat_train_seconds,
-                len(x_fit),
-                len(x_val),
-                repeat_seed,
-            ),
+            repeat_row,
         ],
     )
 
