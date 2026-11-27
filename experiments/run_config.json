@@ -50,11 +50,11 @@
   "validation_f1_macro": 0.9192672999286525,
   "repeat_seed": 43,
   "repeat_validation_f1_macro": 0.9192672999286525,
-  "final_train_seconds": 98.93685849999997,
+  "final_train_seconds": 93.4363386,
   "test": {
     "accuracy": 0.9193421052631578,
     "f1_macro": 0.919164389605019,
-    "predict_seconds": 0.672494400000005,
+    "predict_seconds": 0.6519612999999822,
     "per_class": {
       "World": {
         "precision": 0.9398578458173865,
@@ -110,13 +110,13 @@
   ],
   "model_path": "models/newsscope.joblib",
   "final_computational_cost": {
-    "train_seconds": 98.93685849999997,
-    "predict_seconds": 0.672494400000005,
-    "energy_kwh": 0.0008136429442518902,
-    "emissions_kg_co2eq": 0.00015199663841569563,
-    "cpu_energy_kwh": 0.0004322926291669999,
-    "ram_energy_kwh": 0.0002742996738888905,
-    "gpu_energy_kwh": 0.00010705064119599997,
+    "train_seconds": 93.4363386,
+    "predict_seconds": 0.6519612999999822,
+    "energy_kwh": 0.0006542493544898887,
+    "emissions_kg_co2eq": 0.0001222203219122561,
+    "cpu_energy_kwh": 0.00030137432083299996,
+    "ram_energy_kwh": 0.00025906773638888876,
+    "gpu_energy_kwh": 9.380729726800004e-05,
     "carbon_file": "experiments\\carbon\\final_model.csv",
     "feature_count": 459310,
     "model_size_mb": 41.87990665435791
