@@ -1,13 +1,8 @@
-"""Comparación reproducible de TF-IDF + tres clasificadores sobre AG News.
-
-Selección exclusivamente en validación estratificada; prueba solo para el
-pipeline elegido, reentrenado con los 120 000 ejemplos de entrenamiento.
-"""
-
 import csv
 import json
 from pathlib import Path
 from time import perf_counter
+from codecarbon import OfflineEmissionsTracker
 
 import joblib
 import matplotlib
@@ -33,13 +28,13 @@ from config import RANDOM_STATE
 ROOT = Path(__file__).resolve().parent.parent
 EXPERIMENTS = ROOT / "experiments"
 MODELS = ROOT / "models"
+CARBON_DIR = EXPERIMENTS / "carbon"
 CLASS_NAMES = ("World", "Sports", "Business", "Sci/Tech")
 LABELS = tuple(range(len(CLASS_NAMES)))
 DATASET_ID = "fancyzhx/ag_news"
 VALIDATION_FRACTION = 0.2
 
-# Conjunto pequeño y explícito de configuraciones, sin búsqueda en test.
-# La primera reproduce los hiperparámetros de la línea base original.
+
 CONFIGURATIONS = (
     {"id": "logistic_unigrams", "model": "LogisticRegression", "ngram_range": (1, 1), "C": 1.0},
     {"id": "logistic_bigrams", "model": "LogisticRegression", "ngram_range": (1, 2), "C": 1.0},
@@ -68,6 +63,86 @@ def build_pipeline(config, seed=RANDOM_STATE):
         raise ValueError(f"Modelo desconocido: {config['model']}")
     return Pipeline([("tfidf", tfidf), ("classifier", classifier)])
 
+def train_and_measure(config, x_fit, y_fit, x_val, y_val):
+
+    CARBON_DIR.mkdir(parents=True, exist_ok=True)
+
+    carbon_file = f"{config['id']}_validation.csv"
+
+    tracker = OfflineEmissionsTracker(
+        country_iso_code="COL",
+        tracking_mode="process",
+        measure_power_secs=1,
+        output_dir=str(CARBON_DIR),
+        output_file=carbon_file,
+        project_name=f"NewsScope-{config['id']}-validation",
+    )
+
+    pipeline = build_pipeline(config)
+
+    tracker.start()
+
+    try:
+        started = perf_counter()
+        pipeline.fit(x_fit, y_fit)
+        train_seconds = perf_counter() - started
+
+        metrics, predictions = measure(
+            pipeline,
+            x_val,
+            y_val
+        )
+
+    finally:
+        emissions = tracker.stop()
+
+    carbon_path = CARBON_DIR / carbon_file
+
+    carbon_values = {
+        "energy_kwh": None,
+        "emissions_kg_co2eq": emissions,
+        "cpu_energy_kwh": None,
+        "ram_energy_kwh": None,
+        "gpu_energy_kwh": None,
+        "carbon_file": str(
+            carbon_path.relative_to(ROOT)
+        ),
+        "feature_count": len(
+            pipeline.named_steps["tfidf"].vocabulary_
+        ),
+    }
+
+    
+    if carbon_path.exists():
+        with carbon_path.open(
+            newline="",
+            encoding="utf-8"
+        ) as file:
+            carbon_rows = list(csv.DictReader(file))
+
+        if carbon_rows:
+            last_row = carbon_rows[-1]
+
+            columns_to_read = {
+                "energy_kwh": "energy_consumed",
+                "emissions_kg_co2eq": "emissions",
+                "cpu_energy_kwh": "cpu_energy",
+                "ram_energy_kwh": "ram_energy",
+                "gpu_energy_kwh": "gpu_energy",
+            }
+
+            for result_key, csv_key in columns_to_read.items():
+                value = last_row.get(csv_key)
+
+                if value not in (None, ""):
+                    carbon_values[result_key] = float(value)
+
+    return (
+        pipeline,
+        metrics,
+        train_seconds,
+        carbon_values,
+    )
 
 def measure(model, x, y):
     started = perf_counter()
@@ -162,21 +237,57 @@ def main():
     rows = []
     for config in CONFIGURATIONS:
         print(f"Validación: {config['id']}", flush=True)
-        pipeline = build_pipeline(config)
-        started = perf_counter()
-        pipeline.fit(x_fit, y_fit)
-        train_seconds = perf_counter() - started
-        metrics, _ = measure(pipeline, x_val, y_val)
-        rows.append(flatten_row(config, metrics, train_seconds, len(x_fit), len(x_val), RANDOM_STATE))
 
-    # El orden en CONFIGURATIONS resuelve empates de forma determinista.
+        (
+            pipeline,
+            metrics,
+            train_seconds,
+            carbon_values,
+        ) = train_and_measure(
+            config,
+            x_fit,
+            y_fit,
+            x_val,
+            y_val,
+        )
+
+        row = flatten_row(
+            config,
+            metrics,
+            train_seconds,
+            len(x_fit),
+            len(x_val),
+            RANDOM_STATE,
+        )
+
+        row["energy_kwh"] = carbon_values["energy_kwh"]
+        row["emissions_kg_co2eq"] = carbon_values[
+            "emissions_kg_co2eq"
+        ]
+        row["cpu_energy_kwh"] = carbon_values[
+            "cpu_energy_kwh"
+        ]
+        row["ram_energy_kwh"] = carbon_values[
+            "ram_energy_kwh"
+        ]
+        row["gpu_energy_kwh"] = carbon_values[
+            "gpu_energy_kwh"
+        ]
+        row["feature_count"] = carbon_values[
+            "feature_count"
+        ]
+        row["carbon_measurement_file"] = carbon_values[
+            "carbon_file"
+        ]
+        rows.append(row)
+
+
     winner = max(range(len(rows)), key=lambda index: rows[index]["f1_macro"])
     best = CONFIGURATIONS[winner]
     write_csv(EXPERIMENTS / "model_comparison.csv", rows)
     print(f"Seleccionado en validación: {best['id']}", flush=True)
 
-    # Comprobación de estabilidad: repetir la configuración ganadora con otra
-    # semilla, sobre EXACTAMENTE la misma partición; no decide el ganador.
+    
     repeat_seed = RANDOM_STATE + 1
     repeated = build_pipeline(best, repeat_seed)
     started = perf_counter()
