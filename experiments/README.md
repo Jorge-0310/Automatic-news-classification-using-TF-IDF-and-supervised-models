@@ -2,7 +2,9 @@
 
 El entrenamiento completo se ejecuta desde la raíz del repositorio con:
 
+```bash
 python src/train.py
+```
 
 El script descarga el conjunto de datos AG News, construye los cuatro
 pipelines experimentales, mide su desempeño y guarda automáticamente los
@@ -10,8 +12,9 @@ resultados en la carpeta `experiments/`.
 
 ## Archivos generados
 
-La ejecución produce los siguientes archivos:
+La ejecución produce los siguientes archivos (rutas relativas a la raíz):
 
+```text
 experiments/
 ├── carbon/
 │   ├── logistic_unigrams_validation.csv
@@ -25,6 +28,7 @@ experiments/
 ├── run_config.json
 ├── confusion_matrix.png
 └── f1_per_class.png
+```
 
 El archivo `logistic_bigrams_repeat_validation.csv` se genera con el modelo
 ganador y la segunda semilla experimental. Su nombre se adapta
@@ -32,7 +36,9 @@ automáticamente si otra configuración resulta ganadora.
 
 El modelo serializado queda fuera de Git en:
 
+```text
 models/newsscope.joblib
+```
 
 Los resultados preliminares anteriores permanecen en `results/`, pero no se
 utilizan para seleccionar el ganador del experimento principal.
@@ -100,9 +106,8 @@ El proyecto utiliza `CodeCarbon` mediante
 `OfflineEmissionsTracker`. La dependencia y su versión se encuentran en
 `requirements.txt`.
 
-Para cada configuración se registra una medición ambiental en:
-
-experiments/carbon/
+Para cada configuración se registra una medición ambiental en
+`experiments/carbon/`.
 
 También se mide por separado:
 
@@ -126,9 +131,11 @@ Los archivos CSV de CodeCarbon incluyen, entre otros campos:
 
 La configuración ambiental utiliza:
 
+```python
 country_iso_code="COL"
 tracking_mode="process"
 measure_power_secs=1
+```
 
 Las emisiones y el consumo energético son estimaciones. Pueden variar según el
 hardware, el sistema operativo, la carga del equipo, la duración del proceso,
@@ -138,6 +145,7 @@ no como mediciones físicas exactas.
 
 En `model_comparison.csv`, las columnas ambientales principales son:
 
+```text
 energy_kwh
 emissions_kg_co2eq
 cpu_energy_kwh
@@ -145,13 +153,12 @@ ram_energy_kwh
 gpu_energy_kwh
 feature_count
 carbon_measurement_file
+```
 
-En `run_config.json`, los resultados del modelo final se almacenan dentro de:
+En `run_config.json`, los resultados del modelo final se almacenan en
+`final_computational_cost`:
 
-"final_computational_cost"
-
-Este bloque incluye:
-
+```text
 train_seconds
 predict_seconds
 energy_kwh
@@ -162,4 +169,12 @@ gpu_energy_kwh
 carbon_file
 feature_count
 model_size_mb
+```
+
+Las rutas en `carbon_measurement_file` y `carbon_file` son relativas a la
+raíz del repositorio y usan `/` en todos los sistemas (por ejemplo,
+`experiments/carbon/final_model.csv`). Los CSV de CodeCarbon pueden acumular
+varias mediciones si se repite el entrenamiento: para la ejecución vigente,
+el consumo y las emisiones de `run_config.json` corresponden al último
+registro de `experiments/carbon/final_model.csv`.
 

@@ -31,6 +31,11 @@ EXPERIMENTS = ROOT / "experiments"
 CARBON_DIR = EXPERIMENTS / "carbon"
 MODELS = ROOT / "models"
 
+
+def relative_artifact_path(path):
+    return path.relative_to(ROOT).as_posix()
+
+
 CLASS_NAMES = ("World", "Sports", "Business", "Sci/Tech")
 LABELS = tuple(range(len(CLASS_NAMES)))
 
@@ -245,9 +250,7 @@ def train_and_measure(
 
     carbon_values = read_carbon_file(carbon_path)
 
-    carbon_values["carbon_file"] = str(
-        carbon_path.relative_to(ROOT)
-    )
+    carbon_values["carbon_file"] = relative_artifact_path(carbon_path)
 
     carbon_values["feature_count"] = len(
         pipeline.named_steps["tfidf"].vocabulary_
@@ -585,8 +588,8 @@ def main():
         ].vocabulary_
     )
 
-    repeat_row["carbon_measurement_file"] = str(
-        repeat_carbon_path.relative_to(ROOT)
+    repeat_row["carbon_measurement_file"] = relative_artifact_path(
+        repeat_carbon_path
     )
 
     write_csv(
@@ -695,9 +698,7 @@ def main():
             "gpu_energy_kwh": final_carbon_values[
                 "gpu_energy_kwh"
             ],
-            "carbon_file": str(
-                final_carbon_path.relative_to(ROOT)
-            ),
+            "carbon_file": relative_artifact_path(final_carbon_path),
             "feature_count": final_feature_count,
             "model_size_mb": model_size_mb,
         },

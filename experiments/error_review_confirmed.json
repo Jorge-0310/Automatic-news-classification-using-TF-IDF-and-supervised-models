@@ -1,0 +1,100 @@
+{
+  "reviewer": "Anderson",
+  "review_date": "2026-11-27",
+  "count": 10,
+  "by_error_type": {
+    "Business confundido con Sci/Tech sin tema tecnológico explícito": 1,
+    "Business confundido con Sports por términos de actividad cotidiana": 1,
+    "Etiqueta Sports difícil de verificar por contexto insuficiente": 1,
+    "Incidente de seguridad olímpica confundido con noticia internacional": 1,
+    "Investigación histórica confundida con noticia internacional": 1,
+    "Noticia deportiva con lenguaje financiero y contexto insuficiente": 1,
+    "Posible discrepancia entre etiqueta de referencia y texto": 1,
+    "Predicción Sports sin indicios deportivos en el texto": 1,
+    "Tema de salud y cultura difícil de encajar en las categorías": 1,
+    "World confundido con Business por componente económico": 1
+  },
+  "cases": [
+    {
+      "test_index": 41,
+      "true_class": "Business",
+      "predicted_class": "Sci/Tech",
+      "error_type": "Business confundido con Sci/Tech sin tema tecnológico explícito",
+      "cause_hypothesis": "El modelo pudo dar peso a asociaciones léxicas del titular o del texto que no reflejan el tema principal; habría que inspeccionar sus características para comprobarlo.",
+      "limitation": "TF-IDF puede clasificar incorrectamente una noticia comercial al basarse en patrones de palabras sin comprender el contexto económico completo."
+    },
+    {
+      "test_index": 36,
+      "true_class": "World",
+      "predicted_class": "Business",
+      "error_type": "World confundido con Business por componente económico",
+      "cause_hypothesis": "La mención al mercado mundial del petróleo pudo influir en la predicción de Business, aunque el acontecimiento central es político.",
+      "limitation": "Una noticia política puede contener términos económicos; TF-IDF puede darles demasiado peso frente al tema principal."
+    },
+    {
+      "test_index": 408,
+      "true_class": "Business",
+      "predicted_class": "World",
+      "error_type": "Posible discrepancia entre etiqueta de referencia y texto",
+      "cause_hypothesis": "El fragmento visible trata de política venezolana; la etiqueta Business podría deberse a contexto del artículo que no aparece aquí o a un problema de etiquetado.",
+      "limitation": "Una discrepancia con la etiqueta de referencia no siempre implica una predicción semánticamente incorrecta; el fragmento puede carecer de contexto suficiente para verificarla."
+    },
+    {
+      "test_index": 155,
+      "true_class": "World",
+      "predicted_class": "Sci/Tech",
+      "error_type": "Tema de salud y cultura difícil de encajar en las categorías",
+      "cause_hypothesis": "Las referencias a médicos y medicina pudieron favorecer Sci/Tech; el fragmento visible no permite explicar con certeza por qué la etiqueta de referencia es World.",
+      "limitation": "Limitación que ilustra: Las cuatro categorías de AG News no ofrecen una categoría específica para salud; un texto breve puede admitir más de una interpretación."
+    },
+    {
+      "test_index": 264,
+      "true_class": "Sci/Tech",
+      "predicted_class": "World",
+      "error_type": "Investigación histórica confundida con noticia internacional",
+      "cause_hypothesis": "Las menciones a países y a la antigua Grecia pudieron favorecer World, mientras que la etiqueta Sci/Tech parece responder al hallazgo o investigación anunciado en el titular.",
+      "limitation": "En un texto breve, las referencias geográficas pueden competir con el tema de investigación; sin más contexto, la distinción entre categorías es incierta."
+    },
+    {
+      "test_index": 3,
+      "true_class": "Sci/Tech",
+      "predicted_class": "Sports",
+      "error_type": "Predicción Sports sin indicios deportivos en el texto",
+      "cause_hypothesis": "El modelo pudo asociar algún patrón de palabras del fragmento con Sports, pero este caso no permite identificar cuál sin inspeccionar las características que influyeron en la predicción.",
+      "limitation": "TF-IDF puede producir una clasificación difícil de justificar a partir del tema visible; la clase predicha y su probabilidad no explican por sí solas la decisión."
+    },
+    {
+      "test_index": 1613,
+      "true_class": "Business",
+      "predicted_class": "Sports",
+      "error_type": "Business confundido con Sports por términos de actividad cotidiana",
+      "cause_hypothesis": "Palabras como «park» y «run» pudieron favorecer Sports pese a que aquí describen actividades con un perro; habría que inspeccionar el modelo para comprobarlo.",
+      "limitation": "TF-IDF puede asociar palabras con una categoría sin distinguir el sentido que tienen en este contexto."
+    },
+    {
+      "test_index": 126,
+      "true_class": "Sports",
+      "predicted_class": "World",
+      "error_type": "Incidente de seguridad olímpica confundido con noticia internacional",
+      "cause_hypothesis": "Las referencias a seguridad, nacionalidad y Atenas pudieron favorecer World, aunque el contexto del incidente son los Juegos Olímpicos.",
+      "limitation": "Un acontecimiento relacionado con el deporte puede tratar principalmente asuntos no deportivos; la categoría depende de cuánto peso se dé al contexto olímpico."
+    },
+    {
+      "test_index": 1840,
+      "true_class": "Sports",
+      "predicted_class": "Business",
+      "error_type": "Noticia deportiva con lenguaje financiero y contexto insuficiente",
+      "cause_hypothesis": "Las expresiones «out of money» y «out of business» pudieron favorecer Business; «icing» en el titular podría aportar el contexto deportivo, pero el fragmento no permite verificarlo.",
+      "limitation": "Un texto muy corto puede contener pistas de categorías distintas sin suficiente contexto para resolver su significado."
+    },
+    {
+      "test_index": 344,
+      "true_class": "Sports",
+      "predicted_class": "Sci/Tech",
+      "error_type": "Etiqueta Sports difícil de verificar por contexto insuficiente",
+      "cause_hypothesis": "Las menciones al calor y la contaminación pudieron influir en Sci/Tech; el fragmento visible no permite establecer qué relación tiene el artículo completo con Sports.",
+      "limitation": "Limitación que ilustra: Un titular y un fragmento introductorio pueden omitir el tema central de la noticia, haciendo incierta tanto la evaluación de la etiqueta como la explicación de la predicción."
+    }
+  ],
+  "note": "Revisión declarada por integrante; hipótesis no prueban causalidad."
+}

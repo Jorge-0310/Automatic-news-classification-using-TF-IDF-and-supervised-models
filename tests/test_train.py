@@ -4,11 +4,21 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from train import CONFIGURATIONS, LABELS, build_pipeline, flatten_row, measure
+from train import (
+    CARBON_DIR, CONFIGURATIONS, LABELS, build_pipeline, flatten_row, measure,
+    relative_artifact_path,
+)
 from error_analysis import select_error_indices
 
 
 class PipelineTests(unittest.TestCase):
+    def test_carbon_paths_are_portable(self):
+        path = CARBON_DIR / "final_model.csv"
+        self.assertEqual(
+            relative_artifact_path(path),
+            "experiments/carbon/final_model.csv",
+        )
+
     def test_error_selection_is_unique_and_covers_multiple_pairs(self):
         truth = [0, 0, 0, 1, 1, 2]
         predicted = [1, 1, 1, 0, 0, 0]

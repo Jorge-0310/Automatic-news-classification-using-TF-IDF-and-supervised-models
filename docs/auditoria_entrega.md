@@ -24,17 +24,20 @@
   y la respuesta a texto vacío. La primera ejecución del test agotó el
   tiempo predeterminado de AppTest (3 s) al cargar el modelo; se elevó
   a 90 s y el mismo flujo pasó.
+- [x] Anderson confirmó diez casos en
+  `experiments/error_review_confirmed.json` (sin textos del corpus);
+  el informe separa esos casos de los doce borradores de IA.
+- [x] Metadatos y enlaces de las siete referencias cotejados con
+  páginas de autores, editoriales, congresos o fichas del conjunto de datos;
+  el informe ahora usa el título `Referencias`.
 
 ## Pendientes humanos o de publicación
 
-- [ ] Un integrante lee y confirma/corrige al menos diez errores con
-  `python src/review_errors.py` (el resultado no debe incluir textos).
-- [ ] Reemplazar en el informe los borradores IA por recuentos y
-  observaciones humanas realmente revisadas.
 - [ ] Confirmar contribuciones de Jorge y Anderson y completar verificaciones,
   reflexión y declaración de uso de IA en la bitácora.
-- [ ] Dar formato IEEE real de dos columnas, comprobar 6–8 páginas,
-  revisar referencias, corregir el texto y exportar PDF.
+- [ ] Completar autoría, afiliación y contactos autorizados en
+  `docs/articulo_ieee.tex`; validar el PDF en dos columnas, revisar ortografía
+  y contenido, y comprobar el requisito de 6–8 páginas antes de publicar.
 - [ ] Después de registrar los cambios y resolver los pendientes, poner
   la versión final en la rama predeterminada `main` y verificar el enlace
   público. No se hizo un merge/push automático desde un árbol de trabajo

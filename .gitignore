@@ -28,5 +28,11 @@ experiments/errors.csv
 Thumbs.db
 .vscode/
 
+# Archivos auxiliares de compilación del artículo IEEE (conservar .tex y .pdf)
+/docs/articulo_ieee.log
+/docs/articulo_ieee.aux
+/docs/articulo_ieee.out
+/docs/articulo_ieee.synctex.gz
+
 # Valoración local de trabajo (no publicar)
 /docs/AGENTS.md

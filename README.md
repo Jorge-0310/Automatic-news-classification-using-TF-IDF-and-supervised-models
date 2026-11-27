@@ -20,7 +20,7 @@ y ejecutar desde la raíz del repositorio. En Linux/macOS:
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+python -m venv .venv
 python -m pip install -r requirements.txt
 python src/train.py
 ```
