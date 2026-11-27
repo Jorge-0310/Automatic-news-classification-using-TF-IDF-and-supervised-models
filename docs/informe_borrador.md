@@ -153,19 +153,11 @@ emisiones de `0,0000253 kg CO2eq`.
 
 Después de seleccionar el ganador, el modelo se reentrenó con los 120.000
 ejemplos del conjunto de entrenamiento. Esta ejecución final requirió
-aproximadamente `118,31 segundos` de entrenamiento y `1,32 segundos` de
-predicción sobre el conjunto de prueba. Para esta misma ejecución,
-`run_config.json` y el último registro de `experiments/carbon/final_model.csv`
-coinciden en la estimación de CodeCarbon: un consumo de
-`0,0011500 kWh` y emisiones de `0,0002148 kg CO2eq`, equivalentes
-aproximadamente a `0,2148 gramos de CO2eq`. El modelo final utilizó
+aproximadamente `93,44 segundos` de entrenamiento y `0,65 segundos` de
+predicción sobre el conjunto de prueba. CodeCarbon estimó un consumo de
+`0,0006542 kWh` y emisiones de `0,0001222 kg CO2eq`, equivalentes
+aproximadamente a `0,1222 gramos de CO2eq`. El modelo final utilizó
 `459.310 características` y ocupó aproximadamente `41,88 MB` en disco.
-
-Estos valores son estimaciones dependientes del hardware, el sistema operativo,
-la carga del equipo, la duración de la ejecución, la versión de Python, la
-versión de CodeCarbon y la intensidad de carbono utilizada para Colombia.
-
-### Análisis de errores
 
 El extractor obtuvo 20 errores distintos, repartidos entre diferentes
 pares de clases. Anderson revisó los textos de **10 casos** y registró su
