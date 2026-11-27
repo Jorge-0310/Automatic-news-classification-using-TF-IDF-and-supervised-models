@@ -148,12 +148,11 @@ emisiones de `0,0000113 kg CO2eq`.
 
 Después de seleccionar el ganador, el modelo se reentrenó con los 120.000
 ejemplos del conjunto de entrenamiento. Esta ejecución final requirió
-aproximadamente `98,94 segundos` de entrenamiento y `0,67 segundos` de
+aproximadamente `93,44 segundos` de entrenamiento y `0,65 segundos` de
 predicción sobre el conjunto de prueba. CodeCarbon estimó un consumo de
-`0,0008136 kWh` y emisiones de `0,0001520 kg CO2eq`, equivalentes
-aproximadamente a `0,1520 gramos de CO2eq`. El modelo final utilizó
+`0,0006542 kWh` y emisiones de `0,0001222 kg CO2eq`, equivalentes
+aproximadamente a `0,1222 gramos de CO2eq`. El modelo final utilizó
 `459.310 características` y ocupó aproximadamente `41,88 MB` en disco.
-
 
 El extractor obtuvo 20 errores distintos, repartidos entre diferentes
 pares de clases. Hay **12 borradores de categorización generados por IA**
