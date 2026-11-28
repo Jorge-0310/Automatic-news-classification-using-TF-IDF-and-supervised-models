@@ -6,31 +6,33 @@ No verifica la veracidad de las noticias ni reemplaza la revisión humana.
 
 ## Estado
 
-El repositorio contiene la línea base histórica, un script comparativo con
-`LogisticRegression`, `ComplementNB` y `SGDClassifier`, y un prototipo local
-Streamlit. En la ejecución registrada en `experiments/`, ganó regresión
-logística con bigramas por F1 macro en validación (0,9192); en prueba obtuvo
-F1 macro 0,9192 y accuracy 0,9193. El modelo guardado no se incluye en Git:
-es necesario entrenarlo localmente. Véase [el plan de trabajo](docs/Plan%20de%20acci%C3%B3n%20de%203%20d%C3%ADas%20%E2%80%94%20NewsScope.md).
+El repositorio contiene una web de demostración (FastAPI + HTML/CSS/JS), la
+línea base histórica, la comparación con `LogisticRegression`, `ComplementNB`
+y `SGDClassifier`, y Streamlit como alternativa local. En la ejecución
+registrada en `experiments/`, ganó regresión logística con bigramas; en prueba
+obtuvo F1 macro 0,9192 y accuracy 0,9193. El modelo guardado no se incluye
+en Git: es necesario entrenarlo localmente.
 
 ## Reproducción
 
-Se recomienda Python 3.11, conexión a Internet para la primera descarga de AG News
-y ejecutar desde la raíz del repositorio. En Linux/macOS:
+Se recomienda Python 3.11, conexión a Internet para la primera descarga de
+AG News y ejecutar desde la raíz del repositorio. En Linux/macOS, cinco comandos:
 
 ```bash
 python -m venv .venv
-python -m venv .venv
+source .venv/bin/activate
 python -m pip install -r requirements.txt
 python src/train.py
+uvicorn api:app --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-En Windows use `.venv\Scripts\Activate.ps1` en vez de `source ...`; si no
-puede activar el entorno, llame a `.venv\Scripts\python.exe` para instalar
-dependencias y ejecutar el script. `requirements.txt` fija también PyArrow,
-dependencia de `datasets`, para evitar combinaciones incompatibles. Se
-comprobó instalación limpia y `pip check` en Windows/Python 3.11; no se ha
-verificado en todas las plataformas.
+Abrir **http://127.0.0.1:8000/**. En Windows, sustituir el segundo comando
+por `.venv\Scripts\Activate.ps1`; si PowerShell no permite la activación,
+usar `.venv\Scripts\python.exe -m pip install -r requirements.txt`,
+`.venv\Scripts\python.exe src/train.py` y
+`.venv\Scripts\python.exe -m uvicorn api:app --host 127.0.0.1 --port 8000 --no-access-log`.
+Escuchar solo en `127.0.0.1`: la demostración no lleva autenticación y no
+debe publicarse como servicio abierto. `requirements.txt` también fija PyArrow.
 
 La línea base previa se puede repetir por separado con `python src/baseline.py`.
 Escribe
@@ -43,9 +45,22 @@ F1 macro, repite la ganadora con otra semilla, reentrena sobre entrenamiento
 completo y finalmente evalúa **solo la ganadora** sobre prueba.
 No es una búsqueda extensa de hiperparámetros ni validación cruzada.
 
-Tras entrenar, pruebe el prototipo con `streamlit run app.py`. El modelo
-local está en `models/newsscope.joblib` (excluido de Git): **primero** hay
-que ejecutar `src/train.py` en cada clon. No cargue archivos joblib ajenos.
+La interfaz principal se sirve desde `web/` por `api.py`. La API lee las
+métricas de `experiments/run_config.json`, `model_comparison.csv` y
+`stability.csv`; el frontend **no entrena** ni introduce cifras manuales.
+`python src/dashboard_data.py` actualiza la copia pública opcional
+`experiments/dashboard_metrics.json`. La vista de errores solo ofrece
+agregados de `experiments/error_review_confirmed.json` cuando existe; no
+expone textos, hipótesis redactadas por el revisor ni `errors.csv`.
+La inferencia carga `models/newsscope.joblib` una vez y solo desde disco
+local: nunca cargue archivos joblib ajenos. Si falta el artefacto, el
+dashboard sigue mostrando métricas, pero clasificar devuelve 503.
+
+Streamlit sigue disponible como respaldo: `streamlit run app.py`.
+No se guarda el texto introducido en un historial ni se envía a servicios
+externos; no introduzca datos personales sin autorización. El servidor
+se inicia sin logs de acceso para reducir la exposición de entradas.
+
 Para candidatos de errores reales: `python src/error_analysis.py`, que crea
 `experiments/errors.csv` local, excluido de Git. Es indispensable clasificar
 manualmente los casos; las columnas de causa vienen vacías. Existe un
@@ -56,6 +71,9 @@ al menos diez casos, solo local). Para las pruebas unitarias:
 `python -m unittest discover -s tests -v`.
 Para verificar la app con un modelo recién entrenado (cuatro entradas,
 probabilidades y texto vacío): `python tests/smoke_app.py`.
+Para verificar la web y API con el modelo local:
+`python tests/smoke_frontend.py`. La suite completa es
+`python -m unittest discover -s tests -v`.
 
 ## Estructura
 
@@ -64,7 +82,11 @@ probabilidades y texto vacío): `python tests/smoke_app.py`.
 - `src/error_analysis.py`: candidatos para análisis manual.
 - `src/annotate_errors.py`: aplica borradores de anotación al CSV local.
 - `src/config.py`: semilla compartida para los scripts de entrenamiento.
-- `app.py`: clasificación local de una noticia.
+- `api.py`: API FastAPI y servidor de la interfaz principal.
+- `src/inference.py`: inferencia con carga única del modelo local.
+- `src/dashboard_data.py`: métricas públicas y recuentos sin noticias.
+- `web/`: frontend responsive de cuatro vistas, sin librerías JS externas.
+- `app.py`: alternativa Streamlit.
 - `data/README.md`: fuente y condiciones de almacenamiento de los datos.
 - `notebooks/exploracion.ipynb`: exploración agregada sin publicar textos.
 - `experiments/README.md`: archivos de resultados y procedimiento.
