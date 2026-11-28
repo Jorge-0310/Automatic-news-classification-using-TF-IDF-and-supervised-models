@@ -1,0 +1,89 @@
+{
+  "status": "Borrador de IA basado en lectura del texto; requiere revisión humana.",
+  "annotations": {
+    "20": {
+      "true_class": "Sci/Tech",
+      "predicted_class": "Business",
+      "error_type": "Empresa tecnológica y empleo",
+      "cause_hypothesis": "El texto menciona una empresa de informática junto con contrataciones, señal de negocio.",
+      "limitation": "Una noticia tecnológica puede incluir vocabulario corporativo."
+    },
+    "36": {
+      "true_class": "World",
+      "predicted_class": "Business",
+      "error_type": "Política y mercados",
+      "cause_hypothesis": "La noticia política también menciona el mercado petrolero.",
+      "limitation": "Una sola etiqueta no recoge la consecuencia económica de un evento político."
+    },
+    "79": {
+      "true_class": "World",
+      "predicted_class": "Sports",
+      "error_type": "Etiqueta de referencia discutible",
+      "cause_hypothesis": "El titular trata explícitamente sobre competencias olímpicas aunque está etiquetado como World.",
+      "limitation": "Algunos desacuerdos pueden reflejar ambigüedad en la etiqueta de referencia, no solo falla del modelo."
+    },
+    "155": {
+      "true_class": "World",
+      "predicted_class": "Sci/Tech",
+      "error_type": "Salud y contexto social",
+      "cause_hypothesis": "El texto combina formación médica con referencias a dieta y cultura.",
+      "limitation": "Las cuatro categorías no delimitan explícitamente noticias de salud."
+    },
+    "264": {
+      "true_class": "Sci/Tech",
+      "predicted_class": "World",
+      "error_type": "Investigación y lugar histórico",
+      "cause_hypothesis": "La referencia a lugares y una ciudad antigua puede competir con el tema de evidencia investigativa.",
+      "limitation": "La terminología de historia y ciencia puede superponerse."
+    },
+    "126": {
+      "true_class": "Sports",
+      "predicted_class": "World",
+      "error_type": "Seguridad en evento deportivo",
+      "cause_hypothesis": "La noticia centra el titular en seguridad, pese a ocurrir durante los Juegos Olímpicos.",
+      "limitation": "Un evento deportivo puede tener como tema principal la seguridad."
+    },
+    "1840": {
+      "true_class": "Sports",
+      "predicted_class": "Business",
+      "error_type": "Vocabulario económico en deporte",
+      "cause_hypothesis": "El fragmento menciona falta de dinero y 'business' dentro de una noticia deportiva.",
+      "limitation": "Las señales léxicas aisladas pueden desplazar el tema real."
+    },
+    "83": {
+      "true_class": "Business",
+      "predicted_class": "Sci/Tech",
+      "error_type": "Industria tecnológica y productos",
+      "cause_hypothesis": "Una demora comercial de Intel también describe chips y televisores.",
+      "limitation": "Business y Sci/Tech comparten vocabulario en noticias de productos."
+    },
+    "23": {
+      "true_class": "Sci/Tech",
+      "predicted_class": "Business",
+      "error_type": "Empresa tecnológica y finanzas",
+      "cause_hypothesis": "La noticia de Google trata principalmente de su salida a bolsa y de inversionistas.",
+      "limitation": "La etiqueta tecnológica puede coexistir con un tema financiero."
+    },
+    "56": {
+      "true_class": "World",
+      "predicted_class": "Business",
+      "error_type": "Negocio internacional",
+      "cause_hypothesis": "La expansión transfronteriza se describe como adquisición corporativa.",
+      "limitation": "La frontera World/Business depende del énfasis editorial."
+    },
+    "348": {
+      "true_class": "World",
+      "predicted_class": "Sports",
+      "error_type": "Etiqueta de referencia discutible",
+      "cause_hypothesis": "La noticia menciona una carrera olímpica y un resultado deportivo.",
+      "limitation": "Una etiqueta World para deporte internacional puede ser ambigua."
+    },
+    "500": {
+      "true_class": "Sci/Tech",
+      "predicted_class": "World",
+      "error_type": "Internet y política",
+      "cause_hypothesis": "El bloqueo de sitios web aparece en un contexto de disputa política.",
+      "limitation": "El medio tecnológico no determina por sí solo el tema de la noticia."
+    }
+  }
+}

@@ -1,6 +1,13 @@
-datasets
-scikit-learn
-pandas
-numpy
-joblib
+codecarbon==3.3.3
+datasets==5.2.0
+pyarrow==24.0.0
+scikit-learn==1.3.2
+numpy==1.26.4
+pandas==2.1.3
+joblib==1.5.3
+streamlit==1.28.1
+matplotlib==3.10.7
+fastapi==0.115.6
+uvicorn==0.34.0
+httpx==0.28.1
 

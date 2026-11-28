@@ -1,0 +1,124 @@
+{
+  "dataset": "fancyzhx/ag_news",
+  "random_state": 42,
+  "validation_fraction": 0.2,
+  "selection_metric": "f1_macro",
+  "validation_count": 24000,
+  "fit_count": 96000,
+  "test_count": 7600,
+  "configurations": [
+    {
+      "id": "logistic_unigrams",
+      "model": "LogisticRegression",
+      "ngram_range": [
+        1,
+        1
+      ],
+      "C": 1.0
+    },
+    {
+      "id": "logistic_bigrams",
+      "model": "LogisticRegression",
+      "ngram_range": [
+        1,
+        2
+      ],
+      "C": 1.0
+    },
+    {
+      "id": "complement_nb_bigrams",
+      "model": "ComplementNB",
+      "ngram_range": [
+        1,
+        2
+      ],
+      "alpha": 1.0
+    },
+    {
+      "id": "sgd_bigrams",
+      "model": "SGDClassifier",
+      "ngram_range": [
+        1,
+        2
+      ],
+      "loss": "log_loss",
+      "alpha": 0.0001
+    }
+  ],
+  "selected_id": "logistic_bigrams",
+  "selected_by": "validation_only",
+  "validation_f1_macro": 0.9192246925568095,
+  "repeat_seed": 43,
+  "repeat_validation_f1_macro": 0.9192246925568095,
+  "final_train_seconds": 118.31374140002299,
+  "test": {
+    "accuracy": 0.9193421052631578,
+    "f1_macro": 0.919164389605019,
+    "predict_seconds": 1.3207122000167146,
+    "per_class": {
+      "World": {
+        "precision": 0.9398578458173865,
+        "recall": 0.9047368421052632,
+        "f1-score": 0.9219629927594529,
+        "support": 1900.0
+      },
+      "Sports": {
+        "precision": 0.9515553289138194,
+        "recall": 0.9821052631578947,
+        "f1-score": 0.9665889665889666,
+        "support": 1900.0
+      },
+      "Business": {
+        "precision": 0.8936170212765957,
+        "recall": 0.8842105263157894,
+        "f1-score": 0.8888888888888888,
+        "support": 1900.0
+      },
+      "Sci/Tech": {
+        "precision": 0.8922279792746114,
+        "recall": 0.9063157894736842,
+        "f1-score": 0.8992167101827675,
+        "support": 1900.0
+      }
+    }
+  },
+  "test_confusion_matrix": [
+    [
+      1719,
+      56,
+      77,
+      48
+    ],
+    [
+      14,
+      1866,
+      11,
+      9
+    ],
+    [
+      52,
+      17,
+      1680,
+      151
+    ],
+    [
+      44,
+      22,
+      112,
+      1722
+    ]
+  ],
+  "model_path": "models/newsscope.joblib",
+  "final_computational_cost": {
+    "train_seconds": 118.31374140002299,
+    "predict_seconds": 1.3207122000167146,
+    "energy_kwh": 0.0011499863501122558,
+    "emissions_kg_co2eq": 0.00021482895006447048,
+    "cpu_energy_kwh": 0.0004269414125000001,
+    "ram_energy_kwh": 0.00032498767472215044,
+    "gpu_energy_kwh": 0.0003980572628901058,
+    "carbon_file": "experiments/carbon/final_model.csv",
+    "feature_count": 459310,
+    "model_size_mb": 41.87990665435791
+  }
+}

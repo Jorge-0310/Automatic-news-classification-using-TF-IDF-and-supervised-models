@@ -1,0 +1,104 @@
+{
+  "status": "confirmed",
+  "count": 10,
+  "types": [
+    {
+      "name": "Business → Sci/Tech",
+      "count": 1
+    },
+    {
+      "name": "Business → Sports",
+      "count": 1
+    },
+    {
+      "name": "Business → World",
+      "count": 1
+    },
+    {
+      "name": "Sci/Tech → Sports",
+      "count": 1
+    },
+    {
+      "name": "Sci/Tech → World",
+      "count": 1
+    },
+    {
+      "name": "Sports → Business",
+      "count": 1
+    },
+    {
+      "name": "Sports → Sci/Tech",
+      "count": 1
+    },
+    {
+      "name": "Sports → World",
+      "count": 1
+    },
+    {
+      "name": "World → Business",
+      "count": 1
+    },
+    {
+      "name": "World → Sci/Tech",
+      "count": 1
+    }
+  ],
+  "pairs": [
+    {
+      "true_class": "Business",
+      "predicted_class": "Sci/Tech",
+      "count": 1
+    },
+    {
+      "true_class": "Business",
+      "predicted_class": "Sports",
+      "count": 1
+    },
+    {
+      "true_class": "Business",
+      "predicted_class": "World",
+      "count": 1
+    },
+    {
+      "true_class": "Sci/Tech",
+      "predicted_class": "Sports",
+      "count": 1
+    },
+    {
+      "true_class": "Sci/Tech",
+      "predicted_class": "World",
+      "count": 1
+    },
+    {
+      "true_class": "Sports",
+      "predicted_class": "Business",
+      "count": 1
+    },
+    {
+      "true_class": "Sports",
+      "predicted_class": "Sci/Tech",
+      "count": 1
+    },
+    {
+      "true_class": "Sports",
+      "predicted_class": "World",
+      "count": 1
+    },
+    {
+      "true_class": "World",
+      "predicted_class": "Business",
+      "count": 1
+    },
+    {
+      "true_class": "World",
+      "predicted_class": "Sci/Tech",
+      "count": 1
+    }
+  ],
+  "limitations": [
+    "Una sola etiqueta puede ocultar temas simultáneos.",
+    "Los textos breves pueden carecer de contexto suficiente.",
+    "Las hipótesis de causa no demuestran cómo decidió el modelo."
+  ],
+  "note": "Recuentos de revisión declarada por el equipo; no incluyen noticias."
+}

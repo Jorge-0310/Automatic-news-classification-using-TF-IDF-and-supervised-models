@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <meta name="description" content="NewsScope: clasificación experimental de noticias y resultados verificables.">
+  <title>NewsScope · Laboratorio de noticias</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+  <div class="top-rule"></div>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#clasificar" aria-label="NewsScope, ir a clasificar">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>News<span class="brand-accent">Scope</span></span>
+      </a>
+      <span class="header-label">LABORATORIO DE CLASIFICACIÓN · AG NEWS</span>
+      <span id="system-status" class="system-status" role="status">Conectando…</span>
+    </div>
+  </header>
+  <nav class="site-nav" aria-label="Secciones">
+    <div class="nav-inner" role="tablist" aria-label="Vistas de NewsScope">
+      <button class="nav-tab active" role="tab" id="tab-clasificar" aria-controls="clasificar" aria-selected="true" data-view="clasificar"><span>01</span> Clasificar</button>
+      <button class="nav-tab" role="tab" id="tab-rendimiento" aria-controls="rendimiento" aria-selected="false" data-view="rendimiento"><span>02</span> Rendimiento</button>
+      <button class="nav-tab" role="tab" id="tab-errores" aria-controls="errores" aria-selected="false" data-view="errores"><span>03</span> Errores</button>
+      <button class="nav-tab" role="tab" id="tab-modelo" aria-controls="modelo" aria-selected="false" data-view="modelo"><span>04</span> El modelo</button>
+    </div>
+  </nav>
+  <main id="main" class="page-shell">
+    <section id="clasificar" class="view" role="tabpanel" aria-labelledby="tab-clasificar">
+      <div class="section-lead">
+        <div class="eyebrow"><span class="eyebrow-line"></span> ESTACIÓN 01 / INFERENCIA</div>
+        <h1>Encuentra el tema.<br><em>Conoce sus límites.</em></h1>
+        <p>Introduce una noticia en inglés y explora cómo un modelo lineal la clasifica entre cuatro categorías. Una predicción no es un juicio editorial ni una verificación de hechos.</p>
+      </div>
+      <div class="workspace">
+        <div class="panel input-panel">
+          <div class="panel-heading"><span class="panel-index">A / ENTRADA</span><span class="tiny-tag">EN INGLÉS</span></div>
+          <form id="predict-form" novalidate>
+            <label for="news-text">Texto de la noticia</label>
+            <textarea id="news-text" maxlength="5000" rows="8" placeholder="Escribe o pega aquí un titular o fragmento de una noticia en inglés…"></textarea>
+            <div class="input-meta"><span>Tu texto se procesa localmente y no se almacena.</span><span id="char-count">0 / 5000</span></div>
+            <div class="example-group">
+              <span class="example-label">PRUEBA CON UN EJEMPLO</span>
+              <div class="example-buttons">
+                <button type="button" class="example-chip" data-example="World">World ↗</button>
+                <button type="button" class="example-chip" data-example="Sports">Sports ↗</button>
+                <button type="button" class="example-chip" data-example="Business">Business ↗</button>
+                <button type="button" class="example-chip" data-example="Sci/Tech">Sci/Tech ↗</button>
+              </div>
+            </div>
+            <button id="predict-button" type="submit" class="primary-button">Clasificar noticia <span aria-hidden="true">↗</span></button>
+          </form>
+        </div>
+        <div class="panel result-panel">
+          <div class="panel-heading"><span class="panel-index">B / LECTURA</span><span class="tiny-tag">4 CATEGORÍAS</span></div>
+          <div id="prediction-status" class="prediction-status" role="status" aria-live="polite">Esperando una noticia para clasificar.</div>
+          <div id="prediction-result" hidden>
+            <span class="result-kicker">CATEGORÍA PREDICHA</span>
+            <div class="result-class" id="predicted-class"></div>
+            <div class="divider"></div>
+            <div class="chart-heading">Probabilidad estimada <span>por clase</span></div>
+            <div id="probability-bars" class="probability-bars"></div>
+            <p class="micro-note">Las probabilidades no están calibradas automáticamente. La categoría con mayor valor no implica certeza.</p>
+          </div>
+          <div class="result-placeholder" id="result-placeholder" aria-hidden="true"><span>W</span><span>S</span><span>B</span><span>T</span></div>
+        </div>
+      </div>
+      <aside class="notice"><span class="notice-icon" aria-hidden="true">!</span><p><strong>Alcance experimental.</strong> NewsScope clasifica temas; no verifica veracidad, no reemplaza revisión humana y no debe usarse para tomar decisiones sobre personas. No introduzcas datos personales sin autorización.</p></aside>
+    </section>
+
+    <section id="rendimiento" class="view" role="tabpanel" aria-labelledby="tab-rendimiento" hidden>
+      <div class="section-lead compact">
+        <div class="eyebrow"><span class="eyebrow-line"></span> ESTACIÓN 02 / EVIDENCIA</div>
+        <h1>Los números,<br><em>con contexto.</em></h1>
+        <p>Métricas leídas de los artefactos del experimento. El navegador no entrena ni reevalúa modelos.</p>
+      </div>
+      <div id="metrics-status" class="inline-status" role="status">Cargando métricas…</div>
+      <div id="metrics-content" hidden>
+        <div class="kpi-grid">
+          <article class="kpi"><span class="kpi-label">01 / ACCURACY · PRUEBA</span><strong id="kpi-accuracy">—</strong><span class="kpi-foot">Aciertos en el conjunto final</span></article>
+          <article class="kpi highlight"><span class="kpi-label">02 / F1 MACRO · PRUEBA</span><strong id="kpi-f1">—</strong><span class="kpi-foot">Cada clase pesa por igual</span></article>
+          <article class="kpi"><span class="kpi-label">03 / MODELO SELECCIONADO</span><strong id="kpi-model" class="kpi-text">—</strong><span class="kpi-foot">Elegido exclusivamente en validación</span></article>
+          <article class="kpi"><span class="kpi-label">04 / AG NEWS</span><strong id="kpi-size">—</strong><span class="kpi-foot">Entrenamiento / prueba</span></article>
+        </div>
+        <div class="data-grid">
+          <article class="panel data-panel">
+            <div class="panel-heading"><span class="panel-index">COMPARACIÓN / VALIDACIÓN</span><span class="tiny-tag" id="validation-count">VALIDACIÓN</span></div>
+            <h2>Cuatro configuraciones</h2>
+            <p>Los valores de esta tabla son de <strong>validación</strong>, no de prueba.</p>
+            <div class="table-wrap"><table><thead><tr><th scope="col">Pipeline</th><th scope="col">F1 macro</th><th scope="col">Accuracy</th><th scope="col">Tiempo de ajuste</th></tr></thead><tbody id="comparison-body"></tbody></table></div>
+          </article>
+          <article class="panel data-panel">
+            <div class="panel-heading"><span class="panel-index">DESGLOSE / PRUEBA</span><span class="tiny-tag" id="test-count">PRUEBA</span></div>
+            <h2>F1 por categoría</h2>
+            <p>El promedio global no cuenta dónde se concentran las dificultades.</p>
+            <div id="class-bars" class="class-bars"></div>
+          </article>
+        </div>
+        <article class="panel matrix-panel">
+          <div class="panel-heading"><span class="panel-index">MATRIZ DE CONFUSIÓN / PRUEBA</span><span class="tiny-tag">CLASIFICADOR FINAL</span></div>
+          <div class="matrix-intro"><div><h2>¿Dónde se confunde?</h2><p>Filas: clase real. Columnas: clase predicha. Los valores fuera de la diagonal son errores.</p></div><span class="matrix-legend"><i></i> Aciertos en diagonal</span></div>
+          <div class="table-wrap"><table class="matrix-table"><thead id="matrix-head"></thead><tbody id="matrix-body"></tbody></table></div>
+        </article>
+        <aside class="method-note" id="method-note"></aside>
+      </div>
+    </section>
+
+    <section id="errores" class="view" role="tabpanel" aria-labelledby="tab-errores" hidden>
+      <div class="section-lead compact">
+        <div class="eyebrow"><span class="eyebrow-line"></span> ESTACIÓN 03 / ANÁLISIS CRÍTICO</div>
+        <h1>También importa<br><em>dónde falla.</em></h1>
+        <p>Los recuentos proceden de casos revisados por el equipo. No publicamos noticias ni fragmentos del conjunto de datos.</p>
+      </div>
+      <div id="errors-status" class="inline-status" role="status">Cargando resumen…</div>
+      <div id="errors-content" hidden>
+        <div class="error-layout">
+          <article class="panel data-panel">
+            <div class="panel-heading"><span class="panel-index">CASOS REVISADOS</span><span class="tiny-tag">SIN TEXTOS</span></div>
+            <div class="error-count" id="error-count">—</div>
+            <p>Casos de error con revisión declarada por un integrante. Esta muestra no representa la distribución de todos los errores del conjunto de prueba.</p>
+            <div class="table-wrap"><table><thead><tr><th scope="col">Clase real → predicha</th><th scope="col">Casos revisados</th></tr></thead><tbody id="error-pairs"></tbody></table></div>
+          </article>
+          <article class="panel data-panel interpretation-panel">
+            <div class="panel-heading"><span class="panel-index">INTERPRETACIÓN RESPONSABLE</span><span class="tiny-tag">LÍMITES</span></div>
+            <h2>Un error no tiene una sola causa.</h2>
+            <ul id="error-limitations" class="limitations-list"></ul>
+            <p class="micro-note">Las hipótesis redactadas para cada noticia no se muestran: pueden contener extractos del corpus y no prueban causalidad.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="modelo" class="view" role="tabpanel" aria-labelledby="tab-modelo" hidden>
+      <div class="section-lead compact">
+        <div class="eyebrow"><span class="eyebrow-line"></span> ESTACIÓN 04 / MÉTODO</div>
+        <h1>Una herramienta,<br><em>no un verificador.</em></h1>
+        <p>NewsScope apoya la organización inicial de noticias en inglés. No decide su relevancia, su intención ni su veracidad.</p>
+      </div>
+      <div class="pipeline" aria-label="Flujo de clasificación">
+        <div class="pipeline-step"><span>01 / ENTRADA</span><strong>Texto en inglés</strong><p>Titular o fragmento breve.</p></div>
+        <span class="pipeline-arrow" aria-hidden="true">→</span>
+        <div class="pipeline-step"><span>02 / REPRESENTACIÓN</span><strong>TF-IDF</strong><p>Unigramas y bigramas.</p></div>
+        <span class="pipeline-arrow" aria-hidden="true">→</span>
+        <div class="pipeline-step"><span>03 / MODELO</span><strong>Clasificador lineal</strong><p>Seleccionado por validación.</p></div>
+        <span class="pipeline-arrow" aria-hidden="true">→</span>
+        <div class="pipeline-step"><span>04 / SALIDA</span><strong>Clase + probabilidades</strong><p>Estimaciones, no certezas.</p></div>
+      </div>
+      <div class="model-grid">
+        <article class="panel info-card"><span class="panel-index">PREGUNTA</span><h2>¿Qué problema resuelve?</h2><p>Un sistema de monitoreo necesita asignar una primera categoría temática a noticias recibidas. El rendimiento se evalúa por F1 macro y métricas de cada clase; el entorno es AG News y la acción es una etiqueta revisable por humanos.</p></article>
+        <article class="panel info-card"><span class="panel-index">ALTERNATIVAS</span><h2>Tres formas de aprender</h2><p><strong>Regresión logística:</strong> modelo lineal discriminativo. <strong>ComplementNB:</strong> clasificador probabilístico diseñado para texto. <strong>SGDClassifier:</strong> ajuste lineal por gradiente estocástico. Se compararon bajo la misma partición.</p></article>
+        <article class="panel info-card"><span class="panel-index">LÍMITE 01</span><h2>Cuatro categorías</h2><p>World, Sports, Business y Sci/Tech no representan todos los temas periodísticos; una noticia puede tratar varios asuntos a la vez.</p></article>
+        <article class="panel info-card"><span class="panel-index">LÍMITE 02</span><h2>Corpus histórico, en inglés</h2><p>Un resultado en AG News no se traslada directamente a noticias actuales, locales o en español. Las probabilidades no garantizan calibración.</p></article>
+      </div>
+      <aside class="notice"><span class="notice-icon" aria-hidden="true">↗</span><p>Consulta el <a href="https://github.com/Jorge-0310/Automatic-news-classification-using-TF-IDF-and-supervised-models" target="_blank" rel="noopener noreferrer">repositorio y su documentación académica</a>. Los textos de AG News no se redistribuyen en esta interfaz.</p></aside>
+    </section>
+  </main>
+  <footer class="site-footer"><div><strong>NewsScope</strong><span>Un experimento de clasificación temática · AG News</span></div><span>EXPLORA LA EVIDENCIA. REVISA LOS LÍMITES.</span></footer>
+</body>
+</html>

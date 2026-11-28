@@ -76,4 +76,4 @@ python src/baseline.py
 6. Examinar al menos diez errores de clasificación.
 7. Desarrollar el prototipo funcional del sistema.
 
-## Resultados 
+

@@ -11,9 +11,11 @@ from sklearn.metrics import (
     classification_report
 )
 
+from config import RANDOM_STATE
+
 
 def main():
-    results_dir = Path("results")
+    results_dir = Path(__file__).resolve().parent.parent / "results"
     results_dir.mkdir(parents=True, exist_ok=True)
 
     print("Cargando AG News...")
@@ -43,7 +45,7 @@ def main():
             "classifier",
             LogisticRegression(
                 max_iter=1000,
-                random_state=42
+                random_state=RANDOM_STATE
             )
         )
     ])
@@ -83,7 +85,7 @@ def main():
         "test_examples": len(x_test),
         "accuracy": round(accuracy, 4),
         "f1_macro": round(f1_macro, 4),
-        "random_state": 42,
+        "random_state": RANDOM_STATE,
         "max_iter": 1000,
         "status": "first baseline result"
     }
