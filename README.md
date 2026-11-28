@@ -10,13 +10,11 @@ El repositorio contiene una web de demostración (FastAPI + HTML/CSS/JS), la
 línea base histórica, la comparación con `LogisticRegression`, `ComplementNB`
 y `SGDClassifier`, y Streamlit como alternativa local. En la ejecución
 registrada en `experiments/`, ganó regresión logística con bigramas; en prueba
-obtuvo F1 macro 0,9192 y accuracy 0,9193. El modelo guardado no se incluye
-en Git: es necesario entrenarlo localmente.
-
+obtuvo F1 macro 0,9192 y accuracy 0,9193. 
 ## Reproducción
 
 Se recomienda Python 3.11, conexión a Internet para la primera descarga de
-AG News y ejecutar desde la raíz del repositorio. En Linux/macOS, cinco comandos:
+AG News y ejecutar desde la raíz del repositorio. En Linux/macOS:
 
 ```bash
 python -m venv .venv
@@ -62,27 +60,23 @@ dashboard sigue mostrando métricas, pero clasificar devuelve 503.
 
 Streamlit sigue disponible como respaldo: `streamlit run app.py`.
 No se guarda el texto introducido en un historial ni se envía a servicios
-externos; no introduzca datos personales sin autorización. El servidor
-se inicia sin logs de acceso para reducir la exposición de entradas.
+externos; no introduzca datos personales sin autorización. El servidor se
+inicia sin logs de acceso para reducir la exposición de entradas.
 
 ## Demo pública en Streamlit Community Cloud
 
 La app completa `deploy/streamlit_app.py` se despliega **desde este mismo
 repositorio público** seleccionándola como entrypoint en Community Cloud.
-Su diseño editorial está en `deploy/editorial.css`: reutiliza la navegación
-horizontal, los paneles y los colores de la web local con controles propios
-de Streamlit. Sigue siendo una interfaz Streamlit, no el HTML de `web/`.
-El tema compartido está en `.streamlit/config.toml`, en la raíz; si la
-aplicación muestra texto claro sobre fondo claro, compruebe que su fork
-incluye ese archivo y vuelva a desplegar la rama actualizada.
+La interfaz de Streamlit es independiente del HTML de `web/`. Antes de
+desplegar, compruebe que la rama seleccionada contiene todos los archivos
+de configuración y estilos requeridos por `deploy/streamlit_app.py`.
 No se entrena en Cloud ni se sube `models/newsscope.joblib` a GitHub: se
 descarga de un repositorio *privado de modelos* con un token de solo lectura
 guardado en Streamlit Secrets y se comprueba contra `deploy/model.sha256`.
 El paso a paso (crear repositorio privado de modelos, configurar Secrets y
 seleccionar la rama) está en **[deploy/README.md](deploy/README.md)**.
-Antes de publicar la URL hay que revisar los derechos de AG News;
-su licencia figura como desconocida. **No se ha realizado ningún push ni
-despliegue automático.**
+
+## Análisis de errores y pruebas
 
 Para candidatos de errores reales: `python src/error_analysis.py`, que crea
 `experiments/errors.csv` local, excluido de Git. Es indispensable clasificar
@@ -120,4 +114,3 @@ Para verificar la web y API con el modelo local:
 AG News está en inglés y no representa automáticamente el contexto periodístico
 en español. Consulte [data/README.md](data/README.md) y
 [docs/ia_responsable.md](docs/ia_responsable.md) antes de usar o compartir datos.
-
