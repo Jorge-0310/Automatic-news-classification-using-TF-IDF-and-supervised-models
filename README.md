@@ -65,6 +65,9 @@ se inicia sin logs de acceso para reducir la exposición de entradas.
 
 La app completa `deploy/streamlit_app.py` se despliega **desde este mismo
 repositorio público** seleccionándola como entrypoint en Community Cloud.
+El tema compartido está en `.streamlit/config.toml`, en la raíz; si la
+aplicación muestra texto claro sobre fondo claro, compruebe que su fork
+incluye ese archivo y vuelva a desplegar la rama actualizada.
 No se entrena en Cloud ni se sube `models/newsscope.joblib` a GitHub: se
 descarga de un repositorio *privado de modelos* con un token de solo lectura
 guardado en Streamlit Secrets y se comprueba contra `deploy/model.sha256`.

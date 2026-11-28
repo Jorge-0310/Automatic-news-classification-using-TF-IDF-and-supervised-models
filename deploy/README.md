@@ -41,7 +41,7 @@ deserializar el joblib. No se descarga ni redistribuye el corpus de AG News.
    Streamlit. Confirme que `git status` no incluye el `.joblib`, secretos,
    corpus o textos de `errors.csv`. En particular deben estar disponibles
    `deploy/streamlit_app.py`, `deploy/requirements.txt`,
-   `deploy/.streamlit/config.toml`, `deploy/model.sha256`,
+   `.streamlit/config.toml`, `deploy/model.sha256`,
    `experiments/dashboard_metrics.json` y
    `experiments/error_summary_public.json`.
 6. En [Streamlit Community Cloud](https://share.streamlit.io/), conecte
@@ -58,7 +58,9 @@ deserializar el joblib. No se descarga ni redistribuye el corpus de AG News.
 
    No suba `.streamlit/secrets.toml`; está ignorado. Community Cloud
    lee las dependencias del directorio de la app antes que las del
-   repositorio raíz y aplica `deploy/.streamlit/config.toml`.
+   repositorio raíz. El tema claro se configura en `.streamlit/config.toml`
+   **en la raíz del repositorio** (la configuración del subdirectorio
+   no se aplicó en este despliegue).
 7. Pulse **Deploy**. Un repositorio fuente público produce una app pública
    por defecto. Abra la URL `https://...streamlit.app`, clasifique un ejemplo
    de cada categoría y revise las vistas Rendimiento y Errores. La primera
