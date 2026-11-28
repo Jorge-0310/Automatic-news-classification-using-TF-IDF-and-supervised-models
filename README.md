@@ -77,20 +77,57 @@ El paso a paso (crear repositorio privado de modelos, configurar Secrets y
 seleccionar la rama) está en **[deploy/README.md](deploy/README.md)**.
 
 ## Análisis de errores y pruebas
+Para extraer candidatos de errores reales, se ejecuta:
 
-Para candidatos de errores reales: `python src/error_analysis.py`, que crea
-`experiments/errors.csv` local, excluido de Git. Es indispensable clasificar
-manualmente los casos; las columnas de causa vienen vacías. Existe un
-borrador de IA para 12 de 20 ejemplos (`experiments/error_review_draft.json`)
-que puede aplicarse con `python src/annotate_errors.py` y **debe validarse
-por el equipo** con `python src/review_errors.py` (revisión interactiva de
-al menos diez casos, solo local). Para las pruebas unitarias:
-`python -m unittest discover -s tests -v`.
-Para verificar la app con un modelo recién entrenado (cuatro entradas,
-probabilidades y texto vacío): `python tests/smoke_app.py`.
-Para verificar la web y API con el modelo local:
-`python tests/smoke_frontend.py`. La suite completa es
-`python -m unittest discover -s tests -v`.
+```bash
+python src/error_analysis.py
+```
+
+El comando crea `experiments/errors.csv` local, excluido de Git porque
+contiene fragmentos de artículos del corpus. El archivo no se distribuye ni
+se utiliza para publicar textos de noticias.
+
+El repositorio incluye un borrador generado por IA para 12 de los 20 casos
+(`experiments/error_review_draft.json`). Puede aplicarse de forma opcional
+con `python src/annotate_errors.py`, pero esas anotaciones son provisionales:
+deben validarse leyendo los textos mediante la revisión interactiva:
+
+```bash
+python src/review_errors.py
+```
+
+El revisor debe identificarse y confirmar o editar cada caso. El script no
+guarda la confirmación si se revisan menos de 10 casos, no sobrescribe una
+revisión confirmada existente y exporta únicamente índices, clases y
+anotaciones, sin incluir los textos del corpus. Las hipótesis de causa deben
+redactarse como hipótesis, no como hechos probados. En la revisión registrada
+en `experiments/error_review_confirmed.json`, se confirmaron 10 casos; se
+agruparon cualitativamente en cruces temáticos (4), asociaciones léxicas
+insuficientes (3) y contexto o etiqueta insuficiente (3). 
+Para ejecutar las pruebas unitarias:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Para verificar la aplicación con un modelo recién entrenado, incluyendo
+cuatro entradas, probabilidades y texto vacío:
+
+```bash
+python tests/smoke_app.py
+```
+
+Para verificar la web y la API con el modelo local:
+
+```bash
+python tests/smoke_frontend.py
+```
+
+También existe una comprobación de la interfaz pública de Streamlit:
+
+```bash
+python tests/smoke_streamlit_public.py
+```
 
 ## Estructura
 
