@@ -40,6 +40,7 @@ def dashboard_metrics():
         raise ValueError("F1 de validación incoherente")
     if any(row["id"] != run["selected_id"] for row in stability):
         raise ValueError("Archivo de estabilidad incoherente")
+    cost = run["final_computational_cost"]
 
     # Proyección explícita: no filtrar accidentalmente rutas, notas o textos.
     return {
@@ -58,6 +59,14 @@ def dashboard_metrics():
             "per_class": run["test"]["per_class"],
         },
         "confusion_matrix": run["test_confusion_matrix"],
+        "final_computational_cost": {
+            "train_seconds": cost["train_seconds"],
+            "predict_seconds": cost["predict_seconds"],
+            "energy_kwh": cost["energy_kwh"],
+            "emissions_kg_co2eq": cost["emissions_kg_co2eq"],
+            "feature_count": cost["feature_count"],
+            "model_size_mb": cost["model_size_mb"],
+        },
         "comparison": [
             {
                 "id": row["id"],
@@ -66,6 +75,11 @@ def dashboard_metrics():
                 "accuracy": float(row["accuracy"]),
                 "f1_macro": float(row["f1_macro"]),
                 "train_seconds": float(row["train_seconds"]),
+                "energy_kwh": float(row["energy_kwh"]) if row["energy_kwh"] else None,
+                "emissions_kg_co2eq": (
+                    float(row["emissions_kg_co2eq"])
+                    if row["emissions_kg_co2eq"] else None
+                ),
             }
             for row in comparison
         ],

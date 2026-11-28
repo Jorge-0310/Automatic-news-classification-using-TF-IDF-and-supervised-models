@@ -49,7 +49,11 @@ La interfaz principal se sirve desde `web/` por `api.py`. La API lee las
 métricas de `experiments/run_config.json`, `model_comparison.csv` y
 `stability.csv`; el frontend **no entrena** ni introduce cifras manuales.
 `python src/dashboard_data.py` actualiza la copia pública opcional
-`experiments/dashboard_metrics.json`. La vista de errores solo ofrece
+`experiments/dashboard_metrics.json`. Esta copia incluye también el costo
+computacional del modelo final y las estimaciones de CodeCarbon por
+configuración, que la vista «El modelo» presenta con sus límites. No mide
+el consumo del despliegue en Streamlit ni el de una predicción individual.
+La vista de errores solo ofrece
 agregados de `experiments/error_review_confirmed.json` cuando existe; no
 expone textos, hipótesis redactadas por el revisor ni `errors.csv`.
 La inferencia carga `models/newsscope.joblib` una vez y solo desde disco

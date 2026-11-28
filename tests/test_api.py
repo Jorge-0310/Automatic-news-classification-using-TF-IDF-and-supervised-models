@@ -1,4 +1,5 @@
 import json
+import csv
 import sys
 import tempfile
 import unittest
@@ -39,6 +40,24 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(actual["test"]["accuracy"], original["test"]["accuracy"])
         self.assertEqual(actual["confusion_matrix"], original["test_confusion_matrix"])
         self.assertEqual(len(actual["comparison"]), 4)
+        with (ROOT / "experiments" / "dashboard_metrics.json").open(encoding="utf-8") as source:
+            self.assertEqual(actual, json.load(source))
+        cost = original["final_computational_cost"]
+        self.assertEqual(actual["final_computational_cost"]["energy_kwh"], cost["energy_kwh"])
+        self.assertEqual(
+            actual["final_computational_cost"]["emissions_kg_co2eq"],
+            cost["emissions_kg_co2eq"],
+        )
+        with (ROOT / "experiments" / "model_comparison.csv").open(
+            newline="", encoding="utf-8"
+        ) as source:
+            comparison = list(csv.DictReader(source))
+        self.assertEqual(
+            actual["comparison"][1]["energy_kwh"],
+            float(comparison[1]["energy_kwh"]),
+        )
+        self.assertNotIn("carbon_file", response.text)
+        self.assertNotIn("carbon_measurement_file", response.text)
         self.assertNotIn('"text":', response.text)
 
     def test_errors_are_aggregated_without_corpus(self):

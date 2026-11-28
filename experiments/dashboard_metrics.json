@@ -69,6 +69,14 @@
       1722
     ]
   ],
+  "final_computational_cost": {
+    "train_seconds": 118.31374140002299,
+    "predict_seconds": 1.3207122000167146,
+    "energy_kwh": 0.0011499863501122558,
+    "emissions_kg_co2eq": 0.00021482895006447048,
+    "feature_count": 459310,
+    "model_size_mb": 41.87990665435791
+  },
   "comparison": [
     {
       "id": "logistic_unigrams",
@@ -76,7 +84,9 @@
       "ngram_range": "(1, 1)",
       "accuracy": 0.917375,
       "f1_macro": 0.9171592317501387,
-      "train_seconds": 18.0820684999926
+      "train_seconds": 18.0820684999926,
+      "energy_kwh": 0.0001841610650269086,
+      "emissions_kg_co2eq": 3.4403128557676795e-05
     },
     {
       "id": "logistic_bigrams",
@@ -84,7 +94,9 @@
       "ngram_range": "(1, 2)",
       "accuracy": 0.9194583333333334,
       "f1_macro": 0.9192246925568095,
-      "train_seconds": 70.03767109999899
+      "train_seconds": 70.03767109999899,
+      "energy_kwh": 0.0007174648336127628,
+      "emissions_kg_co2eq": 0.00013402960556720023
     },
     {
       "id": "complement_nb_bigrams",
@@ -92,7 +104,9 @@
       "ngram_range": "(1, 2)",
       "accuracy": 0.9142083333333333,
       "f1_macro": 0.9137763317420703,
-      "train_seconds": 9.69905519997701
+      "train_seconds": 9.69905519997701,
+      "energy_kwh": 0.00012388632733750102,
+      "emissions_kg_co2eq": 2.3143204809918565e-05
     },
     {
       "id": "sgd_bigrams",
@@ -100,7 +114,9 @@
       "ngram_range": "(1, 2)",
       "accuracy": 0.8927083333333333,
       "f1_macro": 0.8921554226907167,
-      "train_seconds": 11.181065500015393
+      "train_seconds": 11.181065500015393,
+      "energy_kwh": 0.00013563578767352157,
+      "emissions_kg_co2eq": 2.5338121495290567e-05
     }
   ],
   "stability": [

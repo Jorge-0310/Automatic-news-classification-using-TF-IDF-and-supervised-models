@@ -94,6 +94,8 @@ div[data-testid="stProgress"] [role="progressbar"] {background:var(--ns-teal)}
 .ns-placeholder i:nth-child(3) {transform:translateY(12px)}
 .ns-notice {margin:22px 0 10px;padding:17px 20px;background:#fff8f2;
   border:1px solid #f0d9c7;color:#694b39;font-size:13px;line-height:1.6}
+.ns-cost-kicker {margin-top:48px;padding-top:24px;border-top:1px solid var(--ns-line)}
+.ns-cost-table {margin-top:23px}
 div[data-testid="column"]:has([data-testid="stMetric"]) {
   background:var(--ns-white);border:1px solid var(--ns-line);
   border-radius:4px;padding:17px;min-width:0

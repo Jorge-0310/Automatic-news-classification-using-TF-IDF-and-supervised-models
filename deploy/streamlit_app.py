@@ -390,6 +390,72 @@ else:
             "Un resultado en AG News no se traslada directamente a noticias actuales, "
             "locales o en español. Las probabilidades no garantizan calibración."
         )
+    st.markdown(
+        '<div class="ns-kicker ns-cost-kicker">— MEDICIÓN / EXPERIMENTO REGISTRADO</div>',
+        unsafe_allow_html=True,
+    )
+    st.subheader("Costo computacional y huella de carbono")
+    st.write(
+        "El reentrenamiento final del modelo ganador utilizó los 120.000 ejemplos "
+        "de AG News y se evaluó una vez sobre los 7.600 de prueba."
+    )
+    if metrics and metrics.get("final_computational_cost"):
+        cost = metrics["final_computational_cost"]
+        a, b, c, d = st.columns(4, gap="small")
+        a.metric("AJUSTE FINAL", f"{cost['train_seconds']:.1f} s")
+        b.metric(
+            "ENERGÍA ESTIMADA",
+            f"{cost['energy_kwh'] * 1000:.2f} Wh"
+            if cost["energy_kwh"] is not None else "No disponible",
+        )
+        c.metric(
+            "EMISIONES ESTIMADAS",
+            f"{cost['emissions_kg_co2eq'] * 1000:.3f} g CO₂e"
+            if cost["emissions_kg_co2eq"] is not None else "No disponible",
+        )
+        d.metric("TAMAÑO DEL MODELO", f"{cost['model_size_mb']:.1f} MiB")
+        st.caption(
+            f"La predicción del lote completo de {metrics['test_count']:,} noticias "
+            f"de prueba tardó {cost['predict_seconds']:.2f} s; esto NO mide "
+            "la latencia ni la huella de una petición en la web."
+        )
+        st.markdown('<div class="ns-cost-table"></div>', unsafe_allow_html=True)
+        st.markdown("**Comparación de configuraciones · validación**")
+        st.dataframe(
+            pd.DataFrame([
+                {
+                    "Pipeline": row["id"],
+                    "Ajuste (s)": round(row["train_seconds"], 1),
+                    "Energía estimada (Wh)": (
+                        round(row["energy_kwh"] * 1000, 3)
+                        if row["energy_kwh"] is not None else None
+                    ),
+                    "Emisiones estimadas (g CO₂e)": (
+                        round(row["emissions_kg_co2eq"] * 1000, 4)
+                        if row["emissions_kg_co2eq"] is not None else None
+                    ),
+                }
+                for row in metrics["comparison"]
+            ]),
+            use_container_width=True,
+            hide_index=True,
+        )
+        st.caption(
+            "«Ajuste» mide solo el entrenamiento de cada configuración; "
+            "CodeCarbon registra el proceso durante entrenamiento y evaluación. "
+            "Son ejecuciones distintas de la final: no sumar ni interpretar "
+            "estas filas como emisiones por noticia."
+        )
+        st.info(
+            "CodeCarbon (modo offline, proceso, país configurado: Colombia) "
+            "estima energía y CO₂ equivalente según hardware e intensidad "
+            "eléctrica. Estas cifras no incluyen descarga de datos, "
+            "preparación, almacenamiento ni funcionamiento continuo de "
+            "Streamlit Cloud; no son mediciones físicas exactas ni una "
+            "huella total del proyecto."
+        )
+    else:
+        st.info("Las mediciones ambientales de esta ejecución no están disponibles.")
     st.info("Los textos de AG News no se redistribuyen en esta interfaz.")
     st.markdown(
         "[Repositorio y documentación académica]"

@@ -54,6 +54,14 @@ def main():
     assert not app.exception and app.metric[0].value == str(summary["count"])
     app.radio[0].set_value("04   El modelo").run()
     assert not app.exception
+    metrics = json.loads(
+        (ROOT / "experiments" / "dashboard_metrics.json").read_text(encoding="utf-8")
+    )
+    cost = metrics["final_computational_cost"]
+    assert app.metric[0].value == f"{cost['train_seconds']:.1f} s"
+    assert app.metric[1].value == f"{cost['energy_kwh'] * 1000:.2f} Wh"
+    assert app.metric[2].value == f"{cost['emissions_kg_co2eq'] * 1000:.3f} g CO₂e"
+    assert app.metric[3].value == f"{cost['model_size_mb']:.1f} MiB"
     print("Streamlit público: hash, 4 predicciones, límite y 3 vistas verificados.")
 
 
