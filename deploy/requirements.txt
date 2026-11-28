@@ -1,0 +1,8 @@
+# Solo inferencia y dashboard. No instalar datasets/CodeCarbon/FastAPI en Cloud.
+streamlit==1.28.1
+scikit-learn==1.3.2
+numpy==1.26.4
+pandas==2.1.3
+joblib==1.5.3
+pyarrow==24.0.0
+huggingface-hub==0.27.1

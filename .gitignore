@@ -36,3 +36,6 @@ Thumbs.db
 
 # Valoración local de trabajo (no publicar)
 /docs/AGENTS.md
+
+# Credenciales locales de Streamlit; no versionar nunca
+.streamlit/secrets.toml

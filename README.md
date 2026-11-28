@@ -61,6 +61,19 @@ No se guarda el texto introducido en un historial ni se envía a servicios
 externos; no introduzca datos personales sin autorización. El servidor
 se inicia sin logs de acceso para reducir la exposición de entradas.
 
+## Demo pública en Streamlit Community Cloud
+
+La app completa `deploy/streamlit_app.py` se despliega **desde este mismo
+repositorio público** seleccionándola como entrypoint en Community Cloud.
+No se entrena en Cloud ni se sube `models/newsscope.joblib` a GitHub: se
+descarga de un repositorio *privado de modelos* con un token de solo lectura
+guardado en Streamlit Secrets y se comprueba contra `deploy/model.sha256`.
+El paso a paso (crear repositorio privado de modelos, configurar Secrets y
+seleccionar la rama) está en **[deploy/README.md](deploy/README.md)**.
+Antes de publicar la URL hay que revisar los derechos de AG News;
+su licencia figura como desconocida. **No se ha realizado ningún push ni
+despliegue automático.**
+
 Para candidatos de errores reales: `python src/error_analysis.py`, que crea
 `experiments/errors.csv` local, excluido de Git. Es indispensable clasificar
 manualmente los casos; las columnas de causa vienen vacías. Existe un
@@ -87,6 +100,7 @@ Para verificar la web y API con el modelo local:
 - `src/dashboard_data.py`: métricas públicas y recuentos sin noticias.
 - `web/`: frontend responsive de cuatro vistas, sin librerías JS externas.
 - `app.py`: alternativa Streamlit.
+- `deploy/streamlit_app.py`: interfaz pública de Streamlit y descarga segura del modelo privado.
 - `data/README.md`: fuente y condiciones de almacenamiento de los datos.
 - `notebooks/exploracion.ipynb`: exploración agregada sin publicar textos.
 - `experiments/README.md`: archivos de resultados y procedimiento.

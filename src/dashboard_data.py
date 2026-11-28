@@ -126,3 +126,7 @@ if __name__ == "__main__":
     with output.open("w", encoding="utf-8") as destination:
         json.dump(dashboard_metrics(), destination, indent=2, ensure_ascii=False)
     print(f"Métricas públicas actualizadas: {output}")
+    summary_path = EXPERIMENTS / "error_summary_public.json"
+    with summary_path.open("w", encoding="utf-8") as destination:
+        json.dump(error_summary(), destination, indent=2, ensure_ascii=False)
+    print(f"Resumen público sin textos: {summary_path}")
