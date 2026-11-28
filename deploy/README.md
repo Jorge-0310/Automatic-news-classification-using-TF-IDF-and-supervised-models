@@ -40,7 +40,7 @@ deserializar el joblib. No se descarga ni redistribuye el corpus de AG News.
 5. **Publicar los cambios de código** en la rama de GitHub que usará
    Streamlit. Confirme que `git status` no incluye el `.joblib`, secretos,
    corpus o textos de `errors.csv`. En particular deben estar disponibles
-   `deploy/streamlit_app.py`, `deploy/requirements.txt`,
+   `deploy/streamlit_app.py`, `deploy/editorial.css`, `deploy/requirements.txt`,
    `.streamlit/config.toml`, `deploy/model.sha256`,
    `experiments/dashboard_metrics.json` y
    `experiments/error_summary_public.json`.

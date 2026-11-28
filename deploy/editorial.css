@@ -1,0 +1,132 @@
+/* NewsScope / Editorial Data Desk. Solo presentación; controles nativos de Streamlit. */
+:root {
+  --ns-paper:#f8f7f4; --ns-ink:#182433; --ns-muted:#5e6974;
+  --ns-coral:#d95d39; --ns-teal:#1e6f78; --ns-line:#d9dee5;
+  --ns-soft:#eef1f4; --ns-white:#fff;
+}
+html, body, .stApp {background:var(--ns-paper);color:var(--ns-ink)}
+.stApp {border-top:5px solid var(--ns-coral)}
+header[data-testid="stHeader"] {background:transparent}
+section.main > div.block-container {
+  max-width:1230px;
+  padding:0 36px 72px;
+}
+.ns-header {min-height:85px;display:flex;align-items:center;gap:24px}
+.ns-logo {font-size:26px;font-weight:750;letter-spacing:-1.5px;white-space:nowrap}
+.ns-logo span {color:var(--ns-coral)}
+.ns-header-label {font-size:10px;letter-spacing:2px;font-weight:700;
+  border-left:1px solid var(--ns-line);padding-left:24px;color:var(--ns-muted)}
+.ns-header-status {margin-left:auto;color:var(--ns-teal);font-size:10px;
+  font-weight:700;letter-spacing:1px;white-space:nowrap}
+/* El selector apunta al único radio de navegación, no a widgets del contenido. */
+div[data-testid="stRadio"] {
+  background:var(--ns-white);border-top:1px solid var(--ns-line);
+  border-bottom:1px solid var(--ns-line);padding:0 8px;margin:0 0 44px;
+}
+div[data-testid="stRadio"] > div[role="radiogroup"] {
+  gap:22px;flex-wrap:wrap;align-items:center;
+}
+div[data-testid="stRadio"] > div[role="radiogroup"] label {
+  padding:13px 5px;color:var(--ns-muted);font-weight:650;
+}
+div[data-testid="stRadio"] > div[role="radiogroup"] label:has(input:checked) {
+  border-bottom:3px solid var(--ns-coral);color:var(--ns-ink);
+}
+div[data-testid="stRadio"] > div[role="radiogroup"] label > div:first-child {
+  position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;
+}
+div[data-testid="stRadio"] > div[role="radiogroup"] label:focus-within {
+  outline:2px solid var(--ns-teal);outline-offset:2px;
+}
+div[data-testid="stRadio"] > div[role="radiogroup"] label p {
+  font-size:14px;white-space:nowrap;
+}
+.ns-kicker {color:var(--ns-coral);font-size:11px;font-weight:700;
+  letter-spacing:2px;margin:6px 0 18px}
+.ns-hero {font-family:Georgia,serif;font-size:clamp(42px,5.5vw,72px)!important;
+  font-weight:400;letter-spacing:-2px;line-height:1.06;margin:0 0 16px!important}
+.ns-hero em {color:var(--ns-teal);font-weight:400}
+.ns-intro {color:var(--ns-muted);font-size:17px;line-height:1.7;
+  max-width:700px;margin:0 0 38px}
+div[data-testid="column"]:has(.ns-panel-marker) {
+  background:var(--ns-white);border:1px solid var(--ns-line);
+  border-radius:4px;padding:25px;box-shadow:0 14px 40px rgba(24,36,51,.045);
+}
+.ns-panel-marker {display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding-bottom:16px;border-bottom:1px solid var(--ns-line);
+  margin-bottom:20px;color:var(--ns-muted);font-size:10px;
+  font-weight:700;letter-spacing:1.6px}
+.ns-panel-marker small {border:1px solid var(--ns-line);padding:4px 9px;
+  font-size:9px;letter-spacing:.7px;white-space:nowrap;border-radius:3px}
+div[data-testid="column"]:has(.ns-panel-marker) h2,
+div[data-testid="column"]:has(.ns-panel-marker) h3 {
+  font-family:Georgia,serif;font-weight:400;letter-spacing:-.5px
+}
+div[data-testid="column"]:has(.ns-panel-marker) textarea {
+  background:#fbfbfa;color:var(--ns-ink);border-color:var(--ns-line)
+}
+.ns-examples {font-size:10px;font-weight:700;letter-spacing:1.4px;
+  margin:10px 0 8px;color:var(--ns-muted)}
+div[data-testid="column"]:has(.ns-panel-marker) div.stButton button {
+  background:var(--ns-soft);color:var(--ns-ink);border-color:transparent;
+  font-size:12px;padding:6px;
+}
+div[data-testid="column"]:has(.ns-panel-marker) div.stButton button:hover {
+  border-color:var(--ns-teal)
+}
+div[data-testid="column"]:has(.ns-panel-marker) div[data-testid="stFormSubmitButton"] button,
+div[data-testid="column"]:has(.ns-panel-marker) div.stFormSubmitButton button {
+  background:var(--ns-coral)!important;border-color:var(--ns-coral)!important;color:white!important;
+  width:100%;font-weight:700;
+}
+div[data-testid="column"]:has(.ns-panel-marker) div[data-testid="stFormSubmitButton"] button:hover,
+div[data-testid="column"]:has(.ns-panel-marker) div.stFormSubmitButton button:hover {
+  background:#bd4b2a!important;border-color:#bd4b2a!important;
+}
+div[data-testid="stProgress"] > div > div {background:var(--ns-soft)}
+div[data-testid="stProgress"] [role="progressbar"] {background:var(--ns-teal)}
+.ns-placeholder {height:270px;display:flex;gap:12px;justify-content:center;
+  align-items:center;opacity:.5}
+.ns-placeholder i {display:grid;place-items:center;width:52px;height:52px;
+  border-radius:50%;border:1px solid var(--ns-line);color:var(--ns-teal);
+  font-family:Georgia,serif;font-size:26px;font-style:normal}
+.ns-placeholder i:nth-child(2) {transform:translateY(-18px)}
+.ns-placeholder i:nth-child(3) {transform:translateY(12px)}
+.ns-notice {margin:22px 0 10px;padding:17px 20px;background:#fff8f2;
+  border:1px solid #f0d9c7;color:#694b39;font-size:13px;line-height:1.6}
+div[data-testid="column"]:has([data-testid="stMetric"]) {
+  background:var(--ns-white);border:1px solid var(--ns-line);
+  border-radius:4px;padding:17px;min-width:0
+}
+div[data-testid="column"]:has([data-testid="stMetric"]) [data-testid="stMetricLabel"] {
+  color:var(--ns-muted);font-size:11px;font-weight:700
+}
+div[data-testid="column"]:has([data-testid="stMetric"]) [data-testid="stMetricValue"] {
+  color:var(--ns-ink);font-family:Georgia,serif;font-size:clamp(22px,2.6vw,39px);
+  white-space:normal;overflow-wrap:anywhere
+}
+div[data-testid="column"]:has([data-testid="stMetric"]) [data-testid="stMetricValue"] > div {
+  white-space:normal;overflow-wrap:anywhere
+}
+div[data-testid="column"]:has([data-testid="stMetric"]) {margin-bottom:16px}
+div[data-testid="column"]:has(.ns-panel-marker) [data-testid="stMetricValue"] {
+  color:var(--ns-teal);font-size:62px
+}
+div[data-testid="stDataFrame"] {border:1px solid var(--ns-line);border-radius:3px}
+.ns-footer {border-top:1px solid var(--ns-line);margin-top:60px;padding-top:26px;
+  color:var(--ns-muted);font-size:11px;letter-spacing:.6px}
+.ns-footer strong {color:var(--ns-ink);font-size:14px;letter-spacing:-.5px}
+@media(max-width:800px) {
+  section.main > div.block-container {padding:0 18px 50px}
+  .ns-header {min-height:70px}
+  .ns-header-label,.ns-header-status {display:none}
+  .ns-intro {font-size:15px;margin-bottom:25px}
+  div[data-testid="stRadio"] > div[role="radiogroup"] {gap:5px 16px}
+  div[data-testid="stRadio"] > div[role="radiogroup"] label {padding:9px 1px}
+  div[data-testid="stRadio"] > div[role="radiogroup"] label p {font-size:12px}
+  div[data-testid="column"]:has(.ns-panel-marker) {padding:18px}
+  .ns-placeholder {height:120px}
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*:before,*:after {animation-duration:.01ms!important;transition-duration:.01ms!important}
+}

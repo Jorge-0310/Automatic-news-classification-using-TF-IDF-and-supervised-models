@@ -105,190 +105,299 @@ def read_public_json(path):
         return json.load(source)
 
 
-st.set_page_config(page_title="NewsScope | Clasificación de noticias", page_icon="📰", layout="wide")
-st.markdown(
-    """
-    <style>
-    .stApp {background:#F8F7F4;color:#182433}
-    .block-container {max-width:1150px;padding-top:2rem;padding-bottom:3rem}
-    h1,h2,h3 {color:#182433;letter-spacing:-.025em}
-    h1 {font-size:3rem!important}
-    [data-testid="stSidebar"] {background:#EEF1F4;border-right:1px solid #D9DEE5}
-    [data-testid="stMetricValue"] {color:#1E6F78}
-    div.stButton > button[kind="primary"],div.stFormSubmitButton > button[kind="primary"] {
-      background:#D95D39;border-color:#D95D39;color:white
-    }
-    div.stButton > button:hover,div.stFormSubmitButton > button:hover {border-color:#1E6F78}
-    .editorial-kicker {color:#D95D39;font-size:.75rem;letter-spacing:.18em;font-weight:700}
-    .editorial-note {color:#5E6974;font-size:.92rem}
-    </style>
-    """,
-    unsafe_allow_html=True,  # Solo CSS constante; nunca incorporar texto de usuario aquí.
+def section_lead(kicker, heading, accent, description):
+    """Textos fijos, nunca provenientes de usuarios ni del corpus."""
+    st.markdown(f'<div class="ns-kicker">— {kicker}</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<h1 class="ns-hero">{heading}<br><em>{accent}</em></h1>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(f'<p class="ns-intro">{description}</p>', unsafe_allow_html=True)
+
+
+def panel_heading(label, badge):
+    st.markdown(
+        f'<div class="ns-panel-marker"><span>{label}</span>'
+        f'<small>{badge}</small></div>',
+        unsafe_allow_html=True,
+    )
+
+
+def select_example(text):
+    # Callbacks de Streamlit se ejecutan antes de instanciar los widgets.
+    st.session_state.news_input = text
+    st.session_state.pop("prediction", None)
+
+
+st.set_page_config(
+    page_title="NewsScope | Laboratorio de noticias",
+    page_icon="📰",
+    layout="wide",
+    initial_sidebar_state="collapsed",
 )
+# CSS local y constante. Todas las entradas de usuario y las cifras se muestran
+# con componentes nativos de Streamlit (no se insertan en HTML).
+st.markdown(
+    f"<style>{(BASE / 'editorial.css').read_text(encoding='utf-8')}</style>",
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<div class="ns-header"><div class="ns-logo">▥ &nbsp;News<span>Scope</span></div>'
+    '<div class="ns-header-label">LABORATORIO DE CLASIFICACIÓN · AG NEWS</div>'
+    '<div class="ns-header-status">● &nbsp;CLASIFICACIÓN EXPERIMENTAL</div></div>',
+    unsafe_allow_html=True,
+)
+nav_selection = st.radio(
+    "Secciones",
+    ("01   Clasificar", "02   Rendimiento", "03   Errores", "04   El modelo"),
+    horizontal=True,
+    label_visibility="collapsed",
+    key="section",
+)
+section = nav_selection.split("   ", 1)[1]
 
 metrics = read_public_json(METRICS_FILE)
 errors = read_public_json(ERRORS_FILE)
-with st.sidebar:
-    st.title("NewsScope")
-    st.caption("LABORATORIO · AG NEWS")
-    section = st.radio(
-        "Explorar",
-        ("Clasificar", "Rendimiento", "Errores", "El modelo"),
-        label_visibility="collapsed",
-    )
-    st.divider()
-    st.caption("Clasificación temática experimental. No verifica veracidad ni reemplaza revisión humana.")
-    st.caption("No introduzcas datos personales sin autorización.")
 
 if section == "Clasificar":
-    st.markdown('<p class="editorial-kicker">01 / INFERENCIA</p>', unsafe_allow_html=True)
-    st.title("Encuentra el tema. Conoce sus límites.")
-    st.write("Pega una noticia en inglés para estimar su categoría entre World, Sports, Business y Sci/Tech.")
-    st.warning(
-        "Clasificación experimental: las probabilidades no están calibradas. "
-        "No verifica veracidad, no reemplaza revisión humana y no debe utilizarse "
-        "para moderación ni decisiones sobre personas."
-    )
-    st.caption(
-        "La entrada llega al servidor de Streamlit que hospeda la app; este código "
-        "no la registra ni la envía a otros servicios. Evita datos personales."
+    section_lead(
+        "ESTACIÓN 01 / INFERENCIA",
+        "Encuentra el tema.",
+        "Conoce sus límites.",
+        "Introduce una noticia en inglés y explora cómo un modelo lineal la clasifica "
+        "entre cuatro categorías. Una predicción no es un juicio editorial ni una "
+        "verificación de hechos.",
     )
     if "news_input" not in st.session_state:
         st.session_state.news_input = ""
     if "limiter_token" not in st.session_state:
         st.session_state.limiter_token = secrets.token_urlsafe(18)
-    example_columns = st.columns(4)
-    for column, (name, example) in zip(example_columns, EXAMPLES.items()):
-        if column.button(name, use_container_width=True):
-            st.session_state.news_input = example
-            st.rerun()
-    with st.form("classification_form"):
-        text = st.text_area(
-            "Texto de la noticia", key="news_input", height=180,
-            max_chars=MAX_TEXT, placeholder="Write or paste an English news headline…",
-        )
-        submitted = st.form_submit_button("Clasificar noticia", type="primary")
+    left, right = st.columns((1.05, .95), gap="medium")
+    with left:
+        panel_heading("A / ENTRADA", "EN INGLÉS")
+        with st.form("classification_form"):
+            text = st.text_area(
+                "Texto de la noticia", key="news_input", height=180,
+                max_chars=MAX_TEXT,
+                placeholder="Escribe o pega aquí un titular o fragmento de una noticia en inglés…",
+            )
+            st.caption("Tu texto se procesa en el servidor de la app y no se guarda en un historial.")
+            submitted = st.form_submit_button("Clasificar noticia ↗", type="primary")
+        st.markdown('<div class="ns-examples">PRUEBA CON UN EJEMPLO</div>', unsafe_allow_html=True)
+        example_columns = st.columns(4, gap="small")
+        for column, (name, example) in zip(example_columns, EXAMPLES.items()):
+            column.button(
+                name, use_container_width=True, on_click=select_example, args=(example,)
+            )
     if submitted:
         text = (text or "").strip()
         if not text:
-            st.warning("Escribe primero una noticia en inglés.")
+            st.session_state.prediction = ("warning", "Escribe primero una noticia en inglés.")
         elif len(text) > MAX_TEXT:
-            st.error(f"Máximo {MAX_TEXT} caracteres.")
+            st.session_state.prediction = ("error", f"Máximo {MAX_TEXT} caracteres.")
         elif not shared_limiter().allow(st.session_state.limiter_token):
-            st.warning("Límite temporal alcanzado. Espera un minuto e inténtalo de nuevo.")
+            st.session_state.prediction = ("warning", "Límite temporal alcanzado. Espera un minuto e inténtalo de nuevo.")
         else:
             try:
-                with st.spinner("Clasificando…"):
+                with st.spinner("Clasificando con el modelo local…"):
                     model = load_trusted_model()
                     probabilities = model.predict_proba([text])[0]
                     scores = {
                         CLASS_NAMES[int(code)]: float(value)
                         for code, value in zip(model.classes_, probabilities)
                     }
-                predicted = max(scores, key=scores.get)
-                st.success(f"Categoría predicha: {predicted}")
-                st.subheader("Probabilidades estimadas")
-                for name, value in sorted(scores.items(), key=lambda item: -item[1]):
-                    label, track, percent = st.columns([1, 4, 1])
-                    label.write(name)
-                    track.progress(min(100, max(0, round(value * 100))))
-                    percent.write(f"{value:.1%}")
-                st.caption("Una probabilidad alta no implica que la noticia sea verdadera.")
+                st.session_state.prediction = ("success", scores)
             except Exception:
-                # No mostrar la excepción: puede contener una URL/token del proveedor.
-                st.error(
-                    "No se pudo cargar el modelo verificado. Comprueba los Secrets, "
-                    "el acceso al repositorio privado y deploy/model.sha256."
+                # No mostrar excepciones: pueden contener una URL/token del proveedor.
+                st.session_state.prediction = (
+                    "error",
+                    "No se pudo cargar el modelo verificado. Comprueba Secrets, el acceso "
+                    "al repositorio privado y deploy/model.sha256.",
                 )
-    if not MODEL_FILE.is_file():
-        st.caption("El modelo se descarga de un repositorio privado al clasificar por primera vez.")
+    with right:
+        panel_heading("B / LECTURA", "4 CATEGORÍAS")
+        state, value = st.session_state.get("prediction", ("empty", None))
+        if state == "success":
+            predicted = max(value, key=value.get)
+            st.caption("CATEGORÍA PREDICHA")
+            st.markdown(f"## {predicted}")
+            st.divider()
+            st.markdown("**Probabilidad estimada** · por clase")
+            for name, score in sorted(value.items(), key=lambda item: -item[1]):
+                label, percent = st.columns((3, 1))
+                label.write(name)
+                percent.write(f"{score:.1%}")
+                st.progress(min(100, max(0, round(score * 100))))
+            st.caption("Las probabilidades no están calibradas automáticamente; el mayor valor no implica certeza.")
+        elif state == "warning":
+            st.warning(value)
+        elif state == "error":
+            st.error(value)
+        else:
+            st.caption("Esperando una noticia para clasificar.")
+            st.markdown(
+                '<div class="ns-placeholder" aria-hidden="true">'
+                '<i>W</i><i>S</i><i>B</i><i>T</i></div>',
+                unsafe_allow_html=True,
+            )
+        if not MODEL_FILE.is_file():
+            st.caption("El modelo se descarga de un repositorio privado en la primera clasificación.")
+    st.markdown(
+        '<div class="ns-notice"><strong>! &nbsp; Alcance experimental.</strong> '
+        'NewsScope clasifica temas; no verifica veracidad, no reemplaza revisión '
+        'humana ni debe usarse para decisiones sobre personas. No introduzcas '
+        'datos personales sin autorización.</div>',
+        unsafe_allow_html=True,
+    )
 
 elif section == "Rendimiento":
-    st.markdown('<p class="editorial-kicker">02 / EVIDENCIA</p>', unsafe_allow_html=True)
-    st.title("Los números, con contexto.")
+    section_lead(
+        "ESTACIÓN 02 / EVIDENCIA",
+        "Los números,",
+        "con contexto.",
+        "Métricas leídas de los artefactos del experimento. El navegador no entrena "
+        "ni reevalúa modelos.",
+    )
     if not metrics:
-        st.error("Faltan métricas públicas. Ejecuta python src/dashboard_data.py antes de preparar el despliegue.")
+        st.error("Faltan métricas públicas. Ejecuta python src/dashboard_data.py antes del despliegue.")
     else:
-        a, b, c, d = st.columns(4)
-        a.metric("Accuracy · prueba", f"{metrics['test']['accuracy']:.4f}")
-        b.metric("F1 macro · prueba", f"{metrics['test']['f1_macro']:.4f}")
+        a, b, c, d = st.columns(4, gap="small")
+        a.metric("01 / ACCURACY · PRUEBA", f"{metrics['test']['accuracy']:.4f}")
+        b.metric("02 / F1 MACRO · PRUEBA", f"{metrics['test']['f1_macro']:.4f}")
         c.metric(
-            "Modelo elegido en validación",
-            "Regresión logística + bigramas"
+            "03 / MODELO · VALIDACIÓN",
+            "Logística + bigramas"
             if metrics["selected_id"] == "logistic_bigrams"
             else metrics["selected_id"],
         )
-        d.metric("AG News · entrenamiento / prueba", f"{metrics['train_count']:,} / {metrics['test_count']:,}")
-        st.caption(metrics["methodology"])
-        st.subheader("Comparación en validación")
-        table = pd.DataFrame(metrics["comparison"])[["id", "accuracy", "f1_macro", "train_seconds"]]
-        st.dataframe(
-            table.rename(columns={
-                "id": "Configuración", "accuracy": "Accuracy", "f1_macro": "F1 macro",
-                "train_seconds": "Tiempo de ajuste (s)",
-            }),
-            use_container_width=True, hide_index=True,
+        d.metric(
+            "04 / AG NEWS · ENTRENAMIENTO / PRUEBA",
+            f"{metrics['train_count']:,} / {metrics['test_count']:,}",
         )
-        left, right = st.columns(2)
+        left, right = st.columns((1.25, .85), gap="medium")
         with left:
-            st.subheader("F1 por clase · prueba")
-            per_class = metrics["test"]["per_class"]
-            values = pd.DataFrame({
-                "Clase": metrics["classes"],
-                "F1": [per_class[name]["f1-score"] for name in metrics["classes"]],
-            }).set_index("Clase")
-            st.bar_chart(values)
-        with right:
-            st.subheader("Matriz de confusión · prueba")
-            st.caption("Filas = clase real · columnas = clase predicha.")
+            panel_heading("COMPARACIÓN / VALIDACIÓN", f"{metrics['validation_count']:,} EJEMPLOS")
+            st.subheader("Cuatro configuraciones")
+            st.caption("Los valores de esta tabla son de validación, no de prueba.")
+            table = pd.DataFrame(metrics["comparison"])[["id", "f1_macro", "accuracy", "train_seconds"]]
             st.dataframe(
-                pd.DataFrame(
-                    metrics["confusion_matrix"],
-                    index=metrics["classes"],
-                    columns=metrics["classes"],
-                ),
-                use_container_width=True,
+                table.rename(columns={
+                    "id": "Pipeline", "f1_macro": "F1 macro", "accuracy": "Accuracy",
+                    "train_seconds": "Ajuste (s)",
+                }),
+                use_container_width=True, hide_index=True,
             )
-        st.caption("Las cifras están guardadas en experiments/. La interfaz no vuelve a entrenar modelos.")
+        with right:
+            panel_heading("DESGLOSE / PRUEBA", f"{metrics['test_count']:,} EJEMPLOS")
+            st.subheader("F1 por categoría")
+            st.caption("El promedio global no muestra dónde se concentran las dificultades.")
+            for name in metrics["classes"]:
+                score = metrics["test"]["per_class"][name]["f1-score"]
+                label, percent = st.columns((3, 1))
+                label.write(name)
+                percent.write(f"{score:.1%}")
+                st.progress(min(100, max(0, round(score * 100))))
+        st.markdown('<div class="ns-matrix-marker"></div>', unsafe_allow_html=True)
+        panel_heading("MATRIZ DE CONFUSIÓN / PRUEBA", "CLASIFICADOR FINAL")
+        st.subheader("¿Dónde se confunde?")
+        st.caption("Filas: clase real. Columnas: clase predicha. Fuera de la diagonal: errores.")
+        st.dataframe(
+            pd.DataFrame(
+                metrics["confusion_matrix"], index=metrics["classes"], columns=metrics["classes"]
+            ),
+            use_container_width=True,
+        )
+        st.info(metrics["methodology"])
 
 elif section == "Errores":
-    st.markdown('<p class="editorial-kicker">03 / ANÁLISIS CRÍTICO</p>', unsafe_allow_html=True)
-    st.title("También importa dónde falla.")
+    section_lead(
+        "ESTACIÓN 03 / ANÁLISIS CRÍTICO",
+        "También importa",
+        "dónde falla.",
+        "Los recuentos proceden de casos revisados por el equipo. No publicamos "
+        "noticias ni fragmentos del conjunto de datos.",
+    )
     if not errors or errors["status"] != "confirmed":
         st.info("No hay un resumen de errores confirmado por el equipo.")
     else:
-        st.metric("Casos revisados", errors["count"])
-        st.caption(
-            "Recuentos de una muestra declarada por el equipo, no de todos los "
-            "errores de prueba. Nunca se cargan textos del corpus en esta app."
-        )
-        st.subheader("Pares de clases confundidos")
-        st.dataframe(
-            pd.DataFrame(errors["pairs"]).rename(columns={
-                "true_class": "Clase real", "predicted_class": "Predicha", "count": "Casos",
-            }),
-            use_container_width=True, hide_index=True,
-        )
-        st.subheader("Limitaciones")
-        for limitation in errors["limitations"]:
-            st.write(f"• {limitation}")
-        st.caption("Las hipótesis por caso no prueban causalidad y no se publican.")
+        left, right = st.columns(2, gap="medium")
+        with left:
+            panel_heading("CASOS REVISADOS", "SIN TEXTOS")
+            st.metric("Casos de error revisados", errors["count"])
+            st.caption("Esta muestra no representa todos los errores del conjunto de prueba.")
+            st.dataframe(
+                pd.DataFrame(errors["pairs"]).rename(columns={
+                    "true_class": "Clase real", "predicted_class": "Predicha", "count": "Casos",
+                }),
+                use_container_width=True, hide_index=True,
+            )
+        with right:
+            panel_heading("INTERPRETACIÓN RESPONSABLE", "LÍMITES")
+            st.subheader("Un error no tiene una sola causa.")
+            for limitation in errors["limitations"]:
+                st.write(f"→ {limitation}")
+            st.caption("Las hipótesis por caso no prueban causalidad y no se publican.")
 
 else:
-    st.markdown('<p class="editorial-kicker">04 / MÉTODO</p>', unsafe_allow_html=True)
-    st.title("Una herramienta, no un verificador.")
-    st.write("Texto en inglés → TF-IDF → clasificador lineal → categoría y probabilidades.")
-    st.write(
-        "Regresión logística aprende pesos discriminativos; ComplementNB es una "
-        "alternativa probabilística para texto; SGDClassifier ajusta un modelo "
-        "lineal mediante gradiente estocástico."
+    section_lead(
+        "ESTACIÓN 04 / MÉTODO",
+        "Una herramienta,",
+        "no un verificador.",
+        "NewsScope apoya la organización inicial de noticias en inglés. No decide "
+        "su relevancia, intención ni veracidad.",
     )
-    st.info(
-        "AG News es histórico y está en inglés. Sus cuatro clases no cubren todos "
-        "los temas periodísticos; el rendimiento no se traslada automáticamente "
-        "a noticias actuales, locales o en español."
-    )
+    steps = st.columns(4, gap="small")
+    for column, kicker, title, detail in zip(
+        steps,
+        ("01 / ENTRADA", "02 / REPRESENTACIÓN", "03 / MODELO", "04 / SALIDA"),
+        ("Texto en inglés", "TF-IDF", "Clasificador lineal", "Clase + probabilidades"),
+        ("Titular o fragmento breve.", "Unigramas y bigramas.",
+         "Seleccionado por validación.", "Estimaciones, no certezas."),
+    ):
+        with column:
+            panel_heading(kicker, "→")
+            st.markdown(f"**{title}**")
+            st.caption(detail)
+    first, second = st.columns(2, gap="medium")
+    with first:
+        panel_heading("PREGUNTA", "CONTEXTO")
+        st.subheader("¿Qué problema resuelve?")
+        st.write(
+            "Un sistema de monitoreo necesita asignar una primera categoría temática "
+            "a noticias recibidas. Se evalúa por F1 macro y métricas de cada clase; "
+            "la etiqueta siempre puede revisarse por humanos."
+        )
+    with second:
+        panel_heading("ALTERNATIVAS", "MODELOS")
+        st.subheader("Tres formas de aprender")
+        st.write(
+            "**Regresión logística:** modelo lineal discriminativo. "
+            "**ComplementNB:** clasificador probabilístico para texto. "
+            "**SGDClassifier:** modelo lineal ajustado por gradiente estocástico."
+        )
+    third, fourth = st.columns(2, gap="medium")
+    with third:
+        panel_heading("LÍMITE 01", "COBERTURA")
+        st.subheader("Cuatro categorías")
+        st.write(
+            "World, Sports, Business y Sci/Tech no cubren todos los temas; "
+            "una noticia puede tratar varios asuntos a la vez."
+        )
+    with fourth:
+        panel_heading("LÍMITE 02", "GENERALIZACIÓN")
+        st.subheader("Corpus histórico, en inglés")
+        st.write(
+            "Un resultado en AG News no se traslada directamente a noticias actuales, "
+            "locales o en español. Las probabilidades no garantizan calibración."
+        )
+    st.info("Los textos de AG News no se redistribuyen en esta interfaz.")
     st.markdown(
         "[Repositorio y documentación académica]"
         "(https://github.com/Jorge-0310/Automatic-news-classification-using-TF-IDF-and-supervised-models)"
     )
+
+st.markdown(
+    '<div class="ns-footer"><strong>NewsScope</strong> · Un experimento de '
+    'clasificación temática &nbsp; / &nbsp; EXPLORA LA EVIDENCIA. REVISA LOS LÍMITES.</div>',
+    unsafe_allow_html=True,
+)

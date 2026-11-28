@@ -65,6 +65,9 @@ se inicia sin logs de acceso para reducir la exposición de entradas.
 
 La app completa `deploy/streamlit_app.py` se despliega **desde este mismo
 repositorio público** seleccionándola como entrypoint en Community Cloud.
+Su diseño editorial está en `deploy/editorial.css`: reutiliza la navegación
+horizontal, los paneles y los colores de la web local con controles propios
+de Streamlit. Sigue siendo una interfaz Streamlit, no el HTML de `web/`.
 El tema compartido está en `.streamlit/config.toml`, en la raíz; si la
 aplicación muestra texto claro sobre fondo claro, compruebe que su fork
 incluye ese archivo y vuelva a desplegar la rama actualizada.

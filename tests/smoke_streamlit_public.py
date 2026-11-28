@@ -28,25 +28,31 @@ def main():
     assert hashlib.sha256(MODEL.read_bytes()).hexdigest() == EXPECTED_HASH
     app = AppTest.from_file(str(SCRIPT), default_timeout=90).run()
     assert not app.exception, [error.message for error in app.exception]
-    app.button[4].click().run()
+    assert app.radio[0].value == "01   Clasificar"
+    submit = lambda: next(button for button in app.button if button.label.startswith("Clasificar noticia"))
+    next(button for button in app.button if button.label == "Sports").click().run()
+    assert app.text_area[0].value.startswith("The football team")
+    app.text_area[0].set_value("")
+    submit().click().run()
     assert any("Escribe primero" in warning.value for warning in app.warning)
     for expected, text in EXAMPLES:
         app.text_area[0].set_value(text)
-        app.button[4].click().run()
+        submit().click().run()
         assert not app.exception, [error.message for error in app.exception]
-        assert any(expected in message.value for message in app.success), expected
-    app.button[4].click().run()  # Quinta solicitud.
-    assert any(message.value.startswith("Categoría predicha") for message in app.success)
-    app.button[4].click().run()  # Sexta solicitud: bloqueada.
+        assert any(f"## {expected}" in item.value for item in app.markdown), expected
+        assert len(app.get("progress")) == 4
+    submit().click().run()  # Quinta solicitud.
+    assert any("## Sci/Tech" in item.value for item in app.markdown)
+    submit().click().run()  # Sexta solicitud: bloqueada.
     assert any("Límite temporal" in warning.value for warning in app.warning)
-    app.radio[0].set_value("Rendimiento").run()
+    app.radio[0].set_value("02   Rendimiento").run()
     assert not app.exception and len(app.metric) == 4
-    app.radio[0].set_value("Errores").run()
+    app.radio[0].set_value("03   Errores").run()
     summary = json.loads(
         (ROOT / "experiments" / "error_summary_public.json").read_text(encoding="utf-8")
     )
     assert not app.exception and app.metric[0].value == str(summary["count"])
-    app.radio[0].set_value("El modelo").run()
+    app.radio[0].set_value("04   El modelo").run()
     assert not app.exception
     print("Streamlit público: hash, 4 predicciones, límite y 3 vistas verificados.")
 
